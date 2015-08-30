@@ -1,0 +1,16 @@
+{
+  "name": "listings",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo index.js:bundle.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babelify": "^6.2.0",
+    "budo": "^4.2.1",
+    "pegjs": "^0.8.0"
+  }
+}
