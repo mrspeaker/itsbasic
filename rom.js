@@ -12,7 +12,10 @@ const env = {
   ram: [],
   rom: {
     chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
-    colors: ['rgb(0,0,0)', 'rgb(255,255,255)', 'rgb(136,0,0)','rgb(1720,255,238)','rgb(204,68,204)', 'rgb(0,204,85)','rgb(0,0,170)'],
+    colors: ['rgb(0,0,0)', 'rgb(255,255,255)', 'rgb(136,0,0)','rgb(170,255,238)',
+      'rgb(204,68,204)', 'rgb(0,204,85)','rgb(0,0,170)', 'rgb(238,238,119)',
+      'rgb(221,136,85)', 'rgb(102,68,0)', 'rgb(255,119,119)', 'rgb(51,51,51)',
+      'rgb(119,119,119)', 'rgb(170,255,102)', 'rgb(0,136,255)', 'rgb(187,187,187)'],
     vidMemLoc: 2042,
     vidColBackLoc: 3042,
     vidColForeLoc: 4042,
@@ -31,6 +34,7 @@ const env = {
         env.cursorPos = y * env.charW + x;
       }
       msg.split("").forEach(c => {
+        env.screen[env.cursorPos].style.backgroundColor = env.rom.colors[env.ram[env.rom.BACKCOL]];
         env.ram[env.rom.vidMemLoc + (env.cursorPos++)] = c.charCodeAt(0) - 97;
         // Wrap curosr
         if (env.cursorPos >= env.charW * env.charH) {

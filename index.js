@@ -28,6 +28,7 @@ const scr = [...new Array(ROM.charW * ROM.charH)].map(() => {
   screen.appendChild(d);
   return d;
 });
+ROM.screen = scr;
 
 const prog9 = `
 10 print "earle rulez  "
@@ -40,6 +41,7 @@ const prog = `
 21 poke v+y+1, x+1
 22 poke v+y+2, x+2
 23 poke v+1000+x, w
+24 poke 0, w
 25 print "hey", 10, x
 35 x=x+1:y=y+41:w=w+1:
 30 if (x < z) then 20
