@@ -11,25 +11,21 @@ const scr = [...new Array(chW * chH)].map(() => {
   screen.appendChild(d);
   return d;
 });
-const prog = `
-10 print("earle rulez  ")
-20 goto(10)
+
+const prog9 = `
+10 print "earle rulez  "
+20 goto 10
 `;
 
-const prog1 = `
+const prog = `
 10 x=0 : y=0:z=20: v=2042
 20 poke v+y, x
 21 poke v+y+1, x+1
 22 poke v+y+2, x+2
-25 print("hey")
+25 print "hey"
 35 x=x+1:y=y+41
-30 if x < z then 20
-`;
-const prog11 = `
-5 x=20:z=10
-10 if x < z then 20
-15 print("hi")
-20 print("no")
+30 if (x < z) then 20
+
 `;
 
 // Convert prog
@@ -92,7 +88,7 @@ var t = setInterval(() => {
     return;
   }
   if (res && res.go) {
-    env.goto(res.go);
+    env.bindings.goto(res.go);
   }
   env.cur++;
 

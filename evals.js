@@ -59,13 +59,6 @@ const evalExpr = (expr, env) => {
   }
 
   switch(expr.tag) {
-  case '*':
-    return evalExpr(expr.left, env) * evalExpr(expr.right, env);
-  case '/':
-    return evalExpr(expr.left, env) / evalExpr(expr.right, env);
-
-  case '=':
-    return evalExpr(expr.left, env) == evalExpr(expr.right, env);
   case '!=':
     return evalExpr(expr.left, env) != evalExpr(expr.right, env);
   case '>':
