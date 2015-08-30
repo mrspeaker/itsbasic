@@ -14,9 +14,17 @@ function screen (dom, ROM) {
     });
   };
 
+  const update = () => {
+    // Update screen
+    chars.map((s, i) => {
+      s.textContent = ROM.rom.chars[ROM.ram[ROM.rom.vidMemLoc + i]];
+    });
+  };
+
   return {
     chars,
-    reset
+    reset,
+    update
   };
 }
 

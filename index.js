@@ -81,14 +81,28 @@ const runProgram = (prog) => {
       return;
     }
     var parsed, res;
+
+    // Parse
     try {
       parsed = parse(ROM.program[ROM.pc][1]);
-      res = evals.evalStatements(parsed, ROM);
     } catch (e) {
-      console.error(e.message, e);
+      ROM.bindings.print("syntax error line " + ROM.program[ROM.pc][0]);
+      ROM.screen.update();
+      console.error("parse.", e.message, e);
       clearInterval(runTimer);
       return;
     }
+
+    // Execute
+    try {
+      res = evals.evalStatements(parsed, ROM);
+    } catch (e) {
+      ROM.bindings.print("exec error line " + ROM.program[ROM.pc][0]);
+      ROM.screen.update();
+      clearInterval(runTimer);
+      return;
+    }
+
     if (res) {
       if (res.go) {
         ROM.bindings.goto(res.go);
@@ -99,10 +113,7 @@ const runProgram = (prog) => {
     }
     ROM.pc++;
 
-    // Update screen
-    scr.chars.map((s, i) => {
-      s.textContent = ROM.rom.chars[ROM.ram[ROM.rom.vidMemLoc + i]];
-    });
+    ROM.screen.update();
 
   }, 1000/60);
 };

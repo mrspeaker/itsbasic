@@ -13,7 +13,7 @@ const peg = `
       { return -parseFloat(chars.join('') + frac); }
 
   string
-    = '\\"' ch:[ a-z]* '\\"' { return ch.join(''); }
+    = '\\"' ch:[ a-z0-9]* '\\"' { return ch.join(''); }
 
   validfirstchar = [a-zA-Z_]
   validchar = [0-9a-zA-Z_]

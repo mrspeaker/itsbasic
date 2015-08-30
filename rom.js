@@ -15,7 +15,7 @@ const env = {
   program: [],
   ram: [],
   rom: {
-    chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
+    chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split(""),
     colors: ['rgb(0,0,0)', 'rgb(255,255,255)', 'rgb(136,0,0)','rgb(170,255,238)',
       'rgb(204,68,204)', 'rgb(0,204,85)','rgb(0,0,170)', 'rgb(238,238,119)',
       'rgb(221,136,85)', 'rgb(102,68,0)', 'rgb(255,119,119)', 'rgb(51,51,51)',
@@ -39,7 +39,8 @@ const env = {
       msg.split("").forEach(c => {
         env.screen.chars[env.cursorPos].style.backgroundColor = env.rom.colors[env.ram[env.rom.BACKCOL]];
         env.screen.chars[env.cursorPos].style.color = env.rom.colors[env.ram[env.rom.FORECOL]];
-        env.ram[env.rom.vidMemLoc + (env.cursorPos++)] = c.charCodeAt(0) - 97;
+
+        env.ram[env.rom.vidMemLoc + (env.cursorPos++)] = charToBasicChar(c);
         // Wrap curosr
         if (env.cursorPos >= env.charW * env.charH) {
           env.cursorPos -= env.charW * env.charH;
@@ -82,5 +83,11 @@ const env = {
 
 env.ram[env.rom.BACKCOL] = 0;
 env.ram[env.rom.FORECOL] = 1;
+
+const charToBasicChar = (c) => {
+  const code = c.charCodeAt(0);
+  if (code >= 48 && code <= 57) return (code - 48) + 26; 
+  if (code >= 97) return code - 97;
+}
 
 module.exports = env;
