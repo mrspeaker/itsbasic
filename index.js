@@ -141,8 +141,9 @@ const runProgram = (prog) => {
     if (ROM.pc >= ROM.program.length) {
       return;
     }
+    if (ROM.pc < 0) ROM.pc = 0;
     var parsed, res;
-
+    
     // Parse
     try {
       parsed = parse(ROM.program[ROM.pc][1]);
@@ -170,6 +171,7 @@ const runProgram = (prog) => {
       try {
         if (res.go) {
           ROM.bindings.goto(res.go);
+          ROM.pc--;
         }
         if (res.type === 'poke') {
           ROM.bindings.poke(res.addr, res.val);

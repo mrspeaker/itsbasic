@@ -16,10 +16,10 @@ const env = {
   ram: [],
   rom: {
     chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split(""),
-    colors: ['rgb(0,0,0)', 'rgb(255,255,255)', 'rgb(136,0,0)','rgb(170,255,238)',
-      'rgb(204,68,204)', 'rgb(0,204,85)','rgb(0,0,170)', 'rgb(238,238,119)',
-      'rgb(221,136,85)', 'rgb(102,68,0)', 'rgb(255,119,119)', 'rgb(51,51,51)',
-      'rgb(119,119,119)', 'rgb(170,255,102)', 'rgb(0,136,255)', 'rgb(187,187,187)'],
+    colors: ['HSL(0, 0%, 0%)', 'HSL(0, 0%, 100%)', 'HSL(8, 45%, 37%)','HSL(187, 42%, 63%)',
+      'HSL(280, 46%, 47%)', 'HSL(96, 49%, 45%)','HSL(249, 59%, 41%)', 'HSL(67, 63%, 64%)',
+      'HSL(34, 67%, 34%)', 'HSL(46, 100%, 18%)', 'HSL(9, 38%, 58%)', 'HSL(0, 0%, 33%)',
+      'HSL(0, 0%, 50%)', 'HSL(98, 73%, 72%)', 'HSL(248, 62%, 65%)', 'HSL(0, 0%, 67%)'],
     vidMemLoc: 2042,
     vidColBackLoc: 3042,
     vidColForeLoc: 4042,
@@ -54,7 +54,7 @@ const env = {
       const line = env.program.find(l => l[0] === lineNumber);
       if (line) {
         env.pc = env.program.indexOf(line);
-        env.pc--;
+        //env.pc--;
       } else {
         throw new Error('Undefined line number ' + lineNumber);
       }
