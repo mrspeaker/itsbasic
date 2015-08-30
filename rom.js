@@ -38,6 +38,7 @@ const env = {
       }
       msg.split("").forEach(c => {
         env.screen.chars[env.cursorPos].style.backgroundColor = env.rom.colors[env.ram[env.rom.BACKCOL]];
+        env.screen.chars[env.cursorPos].style.color = env.rom.colors[env.ram[env.rom.FORECOL]];
         env.ram[env.rom.vidMemLoc + (env.cursorPos++)] = c.charCodeAt(0) - 97;
         // Wrap curosr
         if (env.cursorPos >= env.charW * env.charH) {
@@ -59,6 +60,22 @@ const env = {
     },
     'poke': (addr, val) => {
       env.ram[addr] = val;
+
+      if (addr >= env.rom.vidMemLoc &&
+        addr < env.rom.vidMemLoc + 1000) {
+        env.screen.chars[addr - env.rom.vidMemLoc].style.backgroundColor = env.rom.colors[env.ram[env.rom.BACKCOL]];
+        env.screen.chars[addr - env.rom.vidMemLoc].style.color = env.rom.colors[env.ram[env.rom.FORECOL]];
+      }
+
+      // Update color
+      if (addr >= env.rom.vidColBackLoc &&
+        addr < env.rom.vidColBackLoc + 1000) {
+        env.screen.chars[addr - env.rom.vidColBackLoc].style.backgroundColor = env.rom.colors[val];
+      }
+      if (addr >= env.rom.vidColForeLoc &&
+        addr < env.rom.vidColForeLoc + 1000) {
+        env.screen.chars[addr - env.rom.vidColForeLoc].style.color = env.rom.colors[val];
+      }
     }
   }
 };

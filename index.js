@@ -40,15 +40,16 @@ const prog9 = `
 `;
 
 const prog = `
-10 x=0 : y=0:z=20: w=0: v=2042:
+10 x=0 : y=0:z=20: w=0: v=2042
 20 poke v+y, x
 21 poke v+y+1, x+1
 22 poke v+y+2, x+2
 23 poke v+1000+x, w
 24 poke 0, w
-25 print "hey", 10, x
+25 poke 1, w + 1
+30 print "hey", 10, x
 35 x=x+1:y=y+41:w=w+1:
-30 if (x < z) then 20
+40 if (x < z) then 20
 `;
 
 document.querySelector("#prog").value = prog;
@@ -94,12 +95,6 @@ const runProgram = (prog) => {
       }
       if (res.type === 'poke') {
         ROM.bindings.poke(res.addr, res.val);
-
-        // Update color
-        if (res.addr >= ROM.rom.vidColBackLoc &&
-          res.addr < ROM.rom.vidColBackLoc + 1000) {
-          scr.chars[res.addr - ROM.rom.vidColBackLoc].style.backgroundColor = ROM.rom.colors[res.val];
-        }
       }
     }
     ROM.pc++;
