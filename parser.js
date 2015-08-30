@@ -62,13 +62,13 @@ const peg = `
   additive_op = "+" / "-"
   additive
     = left:multiplicative ws op:additive_op ws right:additive
-      { return {tag:"call", name:op, args:[left, right]}; }
+      { return {tag:'call', name:op, args:[left, right]}; }
     / multiplicative
 
   mult_op = "*" / "/"
   multiplicative
       = left:primary ws op:mult_op ws right:multiplicative
-          { return {tag:op, left:left, right:right}; }
+          { return {tag:'call', name:op, args:[left, right]}; }
       / primary
 
   primary

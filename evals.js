@@ -19,10 +19,9 @@ const exists = (env, v) => {
 };
 
 const update = (env, v, val) => {
-  if (!env) {
+  if (!env || !env.bindings) {
     throw new Error('Undefined variable ' + v);
   }
-
   if (env.bindings.hasOwnProperty(v)) {
     env.bindings[v] = val;
     return 0;
@@ -131,9 +130,8 @@ const evalStatement = (stmt, env) => {
     {
       const addr = evalExpr(stmt.address, env);
       const val = evalExpr(stmt.value, env);
-      env.ram[addr] = val;
+      return {type: 'poke', addr, val};
     }
-    return 0;
 
   case 'define':
     // name args body

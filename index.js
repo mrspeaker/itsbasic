@@ -1,12 +1,28 @@
 const parse = require('./parser');
 const evals = require('./evals');
+const ROM = require('./rom');
+
+/*
+  Implemented:
+
+  print "msg"
+  print "msg", x, y
+  goto 10
+  poke addr, value
+  poke 2042, 1 // first screen char is A
+
+  ---
+
+  probs:
+
+  if x < z then 10 // breaks on 'z'
+  if x < 10 then 10 // works fine.
+  .. problem when "()" removed from function calls
+
+*/
 
 const screen = document.querySelector("#screen");
-const w = 320;
-const h = 200;
-const chW = w / 8;
-const chH = h / 8;
-const scr = [...new Array(chW * chH)].map(() => {
+const scr = [...new Array(ROM.charW * ROM.charH)].map(() => {
   const d = document.createElement("div");
   screen.appendChild(d);
   return d;
@@ -18,18 +34,18 @@ const prog9 = `
 `;
 
 const prog = `
-10 x=0 : y=0:z=20: v=2042
+10 x=0 : y=0:z=20: ooo=0: v=2042:
 20 poke v+y, x
 21 poke v+y+1, x+1
 22 poke v+y+2, x+2
-25 print "hey"
-35 x=x+1:y=y+41
+23 poke v+1000+x, ooo
+25 print "hey", 10, x
+35 x=x+1:y=y+41:ooo=ooo+1:
 30 if (x < z) then 20
-
 `;
 
-// Convert prog
-const lines = prog.split("\n").map(l => {
+// de-line number prog
+ROM.program = prog.split("\n").map(l => {
   const lineNum = l.match(/[0-9]*[\s]+/);
   if (!lineNum) {
     return [-1];
@@ -37,64 +53,38 @@ const lines = prog.split("\n").map(l => {
   return [parseInt(lineNum, 10), l.slice(lineNum.toString().length)];
 }).filter(l => l[0] !== -1);
 
-
-// Env...
-const env = {
-  bindings: {
-    '+': (x, y) => x + y,
-    '-': (x, y) => x - y,
-    'print': (msg) => {
-      msg.split("").forEach(c => {
-        env.ram[env.rom.vidMemLoc + (env.cursorPos++)] = c.charCodeAt(0) - 97;
-        // Wrap curosr
-        if (env.cursorPos >= chW * chH) {
-          env.cursorPos -= chW * chH;
-        }
-        if (env.cursorPos < 0) {
-          env.cursorPos += chW * chH;
-        }
-      });
-    },
-    'goto': lineNumber => {
-      const line = lines.find(l => l[0] === lineNumber);
-      if (line) {
-        env.cur = lines.indexOf(line);
-        env.cur--;
-      } else {
-        throw new Error('Undefined line number ' + lineNumber);
-      }
-    }
-  },
-  outer:{},
-  ram: [],
-  rom: {
-    chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
-    vidMemLoc: 2042
-  },
-  cursorPos: 0,
-  cur: 0
-};
-
 // Run the 'puter
 var t = setInterval(() => {
-  if (env.cur >= lines.length) return;
+  if (ROM.cur >= ROM.program.length) {
+    return;
+  }
   var parsed, res;
   try {
-    parsed = parse(lines[env.cur][1]);
-    res = evals.evalStatements(parsed, env);
+    parsed = parse(ROM.program[ROM.cur][1]);
+    res = evals.evalStatements(parsed, ROM);
   } catch (e) {
     console.error(e.message, e);
     clearInterval(t);
     return;
   }
-  if (res && res.go) {
-    env.bindings.goto(res.go);
+  if (res) {
+    if (res.go) {
+      ROM.bindings.goto(res.go);
+    }
+    if (res.type === 'poke') {
+      ROM.bindings.poke(res.addr, res.val);
+      // Update color
+      if (res.addr >= ROM.rom.vidColBackLoc &&
+        res.addr < ROM.rom.vidColBackLoc + 1000) {
+        scr[res.addr - ROM.rom.vidColBackLoc].style.backgroundColor = ROM.rom.colors[res.val];
+      }
+    }
   }
-  env.cur++;
+  ROM.cur++;
 
   // Update screen
   scr.map((s, i) => {
-    s.textContent = env.rom.chars[env.ram[env.rom.vidMemLoc + i]];
+    s.textContent = ROM.rom.chars[ROM.ram[ROM.rom.vidMemLoc + i]];
   });
 
 }, 50);
