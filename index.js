@@ -38,6 +38,9 @@ const screen = require('./screen');
   2042: screen char memory
   3042: screen back color
   4042: screen forecolor
+  1000: sprites on/off
+  1021: sprite x, y
+
 */
 
 const scr = screen("#screen", ROM);
@@ -56,6 +59,7 @@ const prog = `
 23 poke v+1000+x, w
 24 poke 0, w
 25 poke 1, w + 1
+28 poke 1021,w
 30 print "hey", ((rnd 5) + 20), x
 35 x=x+1:y=y+41:w=w+1:
 40 if (x < z) then 20
@@ -74,17 +78,21 @@ document.querySelector("#cli").addEventListener('keydown', ({which}) => {
 });
 var runTimer = null;
 
-const execLine = (line, ROM, lineNumber = -1) => {
+const execLine = (line, ROM, lineNumber = -1, alreadyParsed = false) => {
   var parsed, res;
   // Parse
-  try {
-    parsed = parse(line);
-  } catch (e) {
-    ROM.bindings.print("syntax error in " + lineNumber + " col " + e.offset);
-    ROM.screen.update();
-    console.error("parse.", e.message, e);
-    clearInterval(runTimer);
-    return;
+  if (alreadyParsed) {
+    parsed = line;
+  } else {
+    try {
+      parsed = parse(line);
+    } catch (e) {
+      ROM.bindings.print("syntax error in " + lineNumber + " col " + e.offset);
+      ROM.screen.update();
+      console.error("parse.", e.message, e);
+      clearInterval(runTimer);
+      return;
+    }
   }
 
   // Execute
@@ -102,8 +110,11 @@ const execLine = (line, ROM, lineNumber = -1) => {
   if (res) {
     try {
       if (res.go) {
-        // eh, can't goto!
-        //ROM.bindings.goto(res.go);
+        ROM.bindings.goto(res.go);
+        ROM.pc--;
+      }
+      if (res.went) {
+        ROM.pc--;
       }
       if (res.type === 'poke') {
         ROM.bindings.poke(res.addr, res.val);
@@ -136,56 +147,40 @@ const runProgram = (prog) => {
     return [parseInt(lineNum, 10), l.slice(lineNum.toString().length)];
   }).filter(l => l[0] !== -1);
 
-  // Run the 'puter
-  runTimer = setInterval(() => {
-    if (ROM.pc >= ROM.program.length) {
-      return;
-    }
-    if (ROM.pc < 0) ROM.pc = 0;
-    var parsed, res;
-    
-    // Parse
+  // Parse the entire prog
+  var err = null;
+  const parsedCode = ROM.program.map(line => {
+    if (err) return;
     try {
-      parsed = parse(ROM.program[ROM.pc][1]);
+      const parsed = parse(line[1]);
+      return parsed;
     } catch (e) {
-      ROM.bindings.print("syntax error in " + ROM.program[ROM.pc][0] + " col " + e.offset);
-      ROM.screen.update();
-      console.error("parse.", e.message, e);
-      clearInterval(runTimer);
-      return;
+      err = ["syntax error in " + line[0] + " col " + e.offset, e];
+      return null;
     }
+  });
 
-    // Execute
-    try {
-      res = evals.evalStatements(parsed, ROM);
-    } catch (e) {
-      ROM.bindings.print("exec error in " + ROM.program[ROM.pc][0]);
-      ROM.screen.update();
-      console.error("exec.", e.message, e);
-      clearInterval(runTimer);
-      return;
-    }
-
-    // Response to exec
-    if (res) {
-      try {
-        if (res.go) {
-          ROM.bindings.goto(res.go);
-          ROM.pc--;
-        }
-        if (res.type === 'poke') {
-          ROM.bindings.poke(res.addr, res.val);
-        }
-      } catch (e) {
-        ROM.bindings.print(e.message.toLowerCase() + " in " + ROM.program[ROM.pc][0]);
-        ROM.screen.update();
-        console.error("res.", e.message, e);
+  if (err) {
+    ROM.bindings.print(err[0]);
+    ROM.screen.update();
+    console.error("parse.", err[1].message, err[1]);
+  } else {
+    // Run the 'puter
+    runTimer = setInterval(() => {
+      if (ROM.pc >= ROM.program.length) {
         return;
       }
-    }
-    ROM.pc++;
 
-    ROM.screen.update();
+      for (var i = 0; i < 20; i++) {
+        execLine(parsedCode[ROM.pc], ROM, ROM.program[ROM.pc][0], true);
+        ROM.pc++;
+        if (ROM.pc >= ROM.program.length) {
+          break;
+        }
+      }
 
-  }, 1000/60);
+      ROM.screen.update();
+
+    }, 1000/60);
+  }
 };

@@ -6,6 +6,16 @@ function screen (dom, ROM) {
     return d;
   });
 
+  const sprites = [...new Array(20)].map(() => {
+    const d = document.createElement("div");
+    d.className = "sprite";
+    screen.appendChild(d);
+
+    d.style.left = (Math.random() * 320 | 0) + 'px';
+    d.style.top = (Math.random() * 200 | 0) + 'px';
+    return d;
+  });
+
   const reset = () => {
     chars.map(c => {
       c.textContent = '!';
@@ -23,6 +33,7 @@ function screen (dom, ROM) {
 
   return {
     chars,
+    sprites,
     reset,
     update
   };

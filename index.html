@@ -10,18 +10,20 @@
     color: #fff;
     font-family: monospace;
     font-size: 8pt;
+    padding: 30px;
   }
   #screen {
     width: 400px;
     height: 250px;
-    border: 25px solid rgb(0,136,255);
     float:left;
     -webkit-transform: skew(0deg,-2deg);
     -ms-transform: skew(0deg,-2deg);
     transform: skew(0deg,-2deg);
-    margin-top: 40px;
+    margin-top: 10px;
     margin-right: 10px;
     background-color: HSL(249, 59%, 41%);
+    border: 25px solid HSL(248, 62%, 65%);
+    position: relative;
   }
   #screen > div {
     float: left;
@@ -30,7 +32,7 @@
     text-align: center;
   }
   #controls {
-    padding-top: 20px;
+
   }
   #prog, #cli {
     background-color: #333;
@@ -43,6 +45,15 @@
   }
   #run {
     margin-left:10px;
+  }
+  .sprite {
+    position: absolute;
+    display: block;
+    left: 0;
+    top: 0;
+    width: 32px !important;
+    height: 32px !important;
+    border:1px solid #444;
   }
   </style>
 </head>

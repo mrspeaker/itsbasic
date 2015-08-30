@@ -23,6 +23,8 @@ const env = {
     vidMemLoc: 2042,
     vidColBackLoc: 3042,
     vidColForeLoc: 4042,
+    spriteOnOffLoc: 1000,
+    spriteXYLoc: 1021,
     BACKCOL: 0,
     FORECOL: 1
   },
@@ -54,7 +56,8 @@ const env = {
       const line = env.program.find(l => l[0] === lineNumber);
       if (line) {
         env.pc = env.program.indexOf(line);
-        //env.pc--;
+        // TODO: hmm... fix goto20 and if()then20
+        return { went: line };
       } else {
         throw new Error('Undefined line number ' + lineNumber);
       }
@@ -77,6 +80,13 @@ const env = {
         addr < env.rom.vidColForeLoc + 1000) {
         env.screen.chars[addr - env.rom.vidColForeLoc].style.color = env.rom.colors[val];
       }
+
+      if (addr >= env.rom.spriteXYLoc && addr <= env.rom.spriteXYLoc + (20 * 2)) {
+        const offset = addr - env.rom.spriteXYLoc;
+        const spriteNum = offset / 2 | 0;
+        const xo = offset % 2 === 0;
+        env.screen.sprites[spriteNum].style[xo ? 'left' : 'top'] = val + 'px';
+      }
     },
     'rnd': (num) => Math.random() * num | 0
   }
@@ -89,6 +99,6 @@ const charToBasicChar = (c) => {
   const code = c.charCodeAt(0);
   if (code >= 48 && code <= 57) return (code - 48) + 26;
   if (code >= 97) return code - 97;
-}
+};
 
 module.exports = env;

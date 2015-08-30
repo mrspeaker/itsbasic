@@ -125,6 +125,11 @@ const evalStatement = (stmt, env) => {
     }
     return val;
 
+  case 'goto':
+    console.log("GOTO");
+    val = {go:stmt.line};
+    return val;
+
   case 'poke':
     {
       const addr = evalExpr(stmt.address, env);
