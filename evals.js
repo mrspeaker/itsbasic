@@ -35,8 +35,8 @@ const add_binding = (env, stmt, value) => {
   // redefine if already exists
   var e = env;
   while (e.hasOwnProperty('bindings')) {
-    if (e.hasOwnProperty(stmt)) {
-      env[stmt] = value;
+    if (e.bindings.hasOwnProperty(stmt)) {
+      e.bindings[stmt] = value;
       return 0;
     }
     e = e.outer;
@@ -80,9 +80,8 @@ const evalExpr = (expr, env) => {
   case 'ident':
     return lookup(env, expr.name);
   default:
-    console.log("hey", expr.tag, expr.args);
+    console.log("expr not found", expr);
     //const func = lookup(env, expr.name);
-    console.log(expr);
   }
 };
 

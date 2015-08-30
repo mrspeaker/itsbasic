@@ -10,6 +10,7 @@ const ROM = require('./rom');
   goto 10
   poke addr, value
   poke 2042, 1 // first screen char is A
+  poke 3042, 2 // first scrren char background col is red
 
   ---
 
@@ -34,13 +35,13 @@ const prog9 = `
 `;
 
 const prog = `
-10 x=0 : y=0:z=20: ooo=0: v=2042:
+10 x=0 : y=0:z=20: w=0: v=2042:
 20 poke v+y, x
 21 poke v+y+1, x+1
 22 poke v+y+2, x+2
-23 poke v+1000+x, ooo
+23 poke v+1000+x, w
 25 print "hey", 10, x
-35 x=x+1:y=y+41:ooo=ooo+1:
+35 x=x+1:y=y+41:w=w+1:
 30 if (x < z) then 20
 `;
 
@@ -73,6 +74,7 @@ var t = setInterval(() => {
     }
     if (res.type === 'poke') {
       ROM.bindings.poke(res.addr, res.val);
+
       // Update color
       if (res.addr >= ROM.rom.vidColBackLoc &&
         res.addr < ROM.rom.vidColBackLoc + 1000) {

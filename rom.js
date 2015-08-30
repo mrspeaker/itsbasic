@@ -15,7 +15,9 @@ const env = {
     colors: ['rgb(0,0,0)', 'rgb(255,255,255)', 'rgb(136,0,0)','rgb(1720,255,238)','rgb(204,68,204)', 'rgb(0,204,85)','rgb(0,0,170)'],
     vidMemLoc: 2042,
     vidColBackLoc: 3042,
-    vidColForeLoc: 4042
+    vidColForeLoc: 4042,
+    BACKCOL: 0,
+    FORECOL: 1
   },
   cursorPos: 0,
   cur: 0,
@@ -26,16 +28,16 @@ const env = {
     '/': (x, y) => x / y,
     'print': (msg, x, y) => {
       if (typeof x !== 'undefined' && typeof y !== 'undefined') {
-        env.cursorPos = y * env.chW + x;
+        env.cursorPos = y * env.charW + x;
       }
       msg.split("").forEach(c => {
         env.ram[env.rom.vidMemLoc + (env.cursorPos++)] = c.charCodeAt(0) - 97;
         // Wrap curosr
-        if (env.cursorPos >= env.chW * env.chH) {
-          env.cursorPos -= env.chW * env.chH;
+        if (env.cursorPos >= env.charW * env.charH) {
+          env.cursorPos -= env.charW * env.charH;
         }
         if (env.cursorPos < 0) {
-          env.cursorPos += env.chW * env.chH;
+          env.cursorPos += env.charW * env.charH;
         }
       });
     },
@@ -53,5 +55,8 @@ const env = {
     }
   }
 };
+
+env.ram[env.rom.BACKCOL] = 0;
+env.ram[env.rom.FORECOL] = 1;
 
 module.exports = env;
