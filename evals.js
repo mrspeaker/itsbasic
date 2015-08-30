@@ -128,8 +128,8 @@ const evalStatement = (stmt, env) => {
   case 'poke':
     {
       const addr = evalExpr(stmt.address, env);
-      const val = evalExpr(stmt.value, env);
-      return {type: 'poke', addr, val};
+      const val_ = evalExpr(stmt.value, env); // grr, chrome no block scope.
+      return {type: 'poke', addr, val: val_};
     }
 
   case 'define':
