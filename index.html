@@ -20,6 +20,7 @@
     -ms-transform: skew(-15deg,5deg);
     transform: skew(0deg,-5deg);
     margin-top: 40px;
+    margin-right: 10px
   }
   #screen > div {
     float: left;
@@ -28,13 +29,17 @@
     background-color: #111;
     text-align: center;
   }
+  #controls {
+    padding-top: 20px;
+  }
+  #prog, #cli {
+    background-color: #333;
+    color:#888;
+    border:1px solid #555;
+  }
   #prog {
     width: 300px;
     height: 200px;
-    background-color: #333;
-    border:1px solid #555;
-    color:#888;
-    margin-left:10px
   }
   #run {
     margin-left:10px;
@@ -43,8 +48,11 @@
 </head>
 <body>
   <div id="screen"></div>
-  <textarea id="prog"></textarea>
-  <br/><button id="run">run</button>
+  <div id="controls">
+    <textarea id="prog"></textarea>
+    <br/><button id="run">run</button>
+    <input type="text" id="cli" />
+  </div>
   <script src="bundle.js"></script>
 </body>
 </html>

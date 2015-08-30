@@ -86,7 +86,7 @@ const evalExpr = (expr, env) => {
 };
 
 const evalStatement = (stmt, env) => {
-  var val = undefined;
+  var val;
   switch(stmt.tag) {
 
   // A single expression

@@ -77,7 +77,8 @@ const env = {
         addr < env.rom.vidColForeLoc + 1000) {
         env.screen.chars[addr - env.rom.vidColForeLoc].style.color = env.rom.colors[val];
       }
-    }
+    },
+    'rnd': (num) => Math.random() * num | 0
   }
 };
 
@@ -86,7 +87,7 @@ env.ram[env.rom.FORECOL] = 1;
 
 const charToBasicChar = (c) => {
   const code = c.charCodeAt(0);
-  if (code >= 48 && code <= 57) return (code - 48) + 26; 
+  if (code >= 48 && code <= 57) return (code - 48) + 26;
   if (code >= 97) return code - 97;
 }
 
