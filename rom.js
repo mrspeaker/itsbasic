@@ -7,6 +7,10 @@ const env = {
   h,
   charW: w / 8,
   charH: h / 8,
+
+  cursorPos: 0, // should be in RAM
+  pc: 0,
+
   outer:{},
   program: [],
   ram: [],
@@ -22,8 +26,7 @@ const env = {
     BACKCOL: 0,
     FORECOL: 1
   },
-  cursorPos: 0,
-  cur: 0,
+
   bindings: {
     '+': (x, y) => x + y,
     '-': (x, y) => x - y,
@@ -48,8 +51,8 @@ const env = {
     'goto': lineNumber => {
       const line = env.program.find(l => l[0] === lineNumber);
       if (line) {
-        env.cur = env.program.indexOf(line);
-        env.cur--;
+        env.pc = env.program.indexOf(line);
+        env.pc--;
       } else {
         throw new Error('Undefined line number ' + lineNumber);
       }

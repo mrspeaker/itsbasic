@@ -61,7 +61,7 @@ const runProgram = (prog) => {
 
   // TODO: real reset!
   ROM.cursorPos = 0;
-  ROM.cur = 0;
+  ROM.pc = 0;
   ROM.ram = [];
   ROM.screen.reset();
 
@@ -76,12 +76,12 @@ const runProgram = (prog) => {
 
   // Run the 'puter
   runTimer = setInterval(() => {
-    if (ROM.cur >= ROM.program.length) {
+    if (ROM.pc >= ROM.program.length) {
       return;
     }
     var parsed, res;
     try {
-      parsed = parse(ROM.program[ROM.cur][1]);
+      parsed = parse(ROM.program[ROM.pc][1]);
       res = evals.evalStatements(parsed, ROM);
     } catch (e) {
       console.error(e.message, e);
@@ -102,7 +102,7 @@ const runProgram = (prog) => {
         }
       }
     }
-    ROM.cur++;
+    ROM.pc++;
 
     // Update screen
     scr.chars.map((s, i) => {

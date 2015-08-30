@@ -9,8 +9,8 @@ function screen (dom, ROM) {
   const reset = () => {
     chars.map(c => {
       c.textContent = '!';
-      c.style.backgroundColor = '';
-      //c.style.color = '';
+      c.style.backgroundColor = ROM.rom.colors[6];
+      c.style.color = ROM.rom.colors[14];
     });
   };
 
