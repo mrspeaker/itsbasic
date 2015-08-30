@@ -34,7 +34,7 @@ const env = {
         env.cursorPos = y * env.charW + x;
       }
       msg.split("").forEach(c => {
-        env.screen[env.cursorPos].style.backgroundColor = env.rom.colors[env.ram[env.rom.BACKCOL]];
+        env.screen.chars[env.cursorPos].style.backgroundColor = env.rom.colors[env.ram[env.rom.BACKCOL]];
         env.ram[env.rom.vidMemLoc + (env.cursorPos++)] = c.charCodeAt(0) - 97;
         // Wrap curosr
         if (env.cursorPos >= env.charW * env.charH) {
