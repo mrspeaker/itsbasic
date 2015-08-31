@@ -67,7 +67,7 @@ const peg = `
       { return {tag:'call', name:op, args:[left, right]}; }
     / multiplicative
 
-  mult_op = "*" / "/"
+  mult_op = "*" / "/" / "mod"
   multiplicative
       = left:primary ws op:mult_op ws right:multiplicative
           { return {tag:'call', name:op, args:[left, right]}; }

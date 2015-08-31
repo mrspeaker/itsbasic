@@ -50,6 +50,7 @@ const env = {
     '-': (x, y) => x - y,
     '*': (x, y) => x * y,
     '/': (x, y) => x / y,
+    'mod': (x, y) => x % y,
     'print': (msg, x, y) => {
       if (typeof x !== 'undefined' && typeof y !== 'undefined') {
         env.cursorPos = y * env.charW + x;
@@ -122,7 +123,11 @@ const env = {
     'read': () => {
       const {ram, rom} = env;
       return ram[ram[rom.dataReadLoc]++];
-    }
+    },
+    'sin': a => Math.sin(a),
+    'cos': a => Math.cos(a),
+    'tan': a => Math.tan(a),
+    'atan2': (y, x) => Math.atan2(y, x),
   }
 };
 

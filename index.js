@@ -19,6 +19,9 @@ const screen = require('./screen');
   rnd 20 // random int between 0 and 19
   data 1,2,3,4 // puts data into memory (writeLoc)
   read() //  reads data from memory (readLoc ) read must happen after data.
+  cos, sin, tan, atan2
+  mod
+  
 
   ---
 
@@ -114,13 +117,11 @@ const prog3 = `
 
 const prog = `
 10 poke 1000, 1
+11 poke 1001, 1
 20 x = 0
-30 poke 1021, x
-35 poke 1022, rnd(10) + 10
+30 poke 1021, cos(x / 60) * 60 + 100
+35 poke 1022, sin(x / 100) * 60 + 130
 40 x = x + 1
-50 if x > 130 then 70
-60 goto 30
-70 x = 0
 80 goto 30
 `;
 

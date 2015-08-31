@@ -126,12 +126,13 @@ const evalStatement = (stmt, env) => {
     return val;
 
   case 'goto':
-    console.log("GOTO");
+  // todo: moove to rom?
     val = {go:stmt.line};
     return val;
 
   case 'poke':
     {
+
       const addr = evalExpr(stmt.address, env);
       const val_ = evalExpr(stmt.value, env); // grr, chrome no block scope.
       return {type: 'poke', addr, val: val_};
