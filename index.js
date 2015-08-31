@@ -17,10 +17,14 @@ const screen = require('./screen');
   poke 3042, 2 // first scrren char background col is red
   peek 2042 // read the address
   rnd 20 // random int between 0 and 19
+  data 1,2,3,4 // puts data into memory (writeLoc)
+  read() //  reads data from memory (readLoc ) read must happen after data.
 
   ---
 
   probs:
+
+  return from rom binding only handles last statement.
 
   ---
 
@@ -30,23 +34,28 @@ const screen = require('./screen');
 
   ---
 
-  todo:
+  next todos:
 
+  for loop
   cursor pos should be in RAM.
-  data/reads
   set sprite data
   if x < 10 then EXPR
+  input (keys)
 
   ---
 
   Mem locations
+
   0: background color
   1: foreground color
+  2: data read location
+  3: data write location
+  1000: sprites on/off
+  1021: sprite x, y
   2042: screen char memory
   3042: screen back color
   4042: screen forecolor
-  1000: sprites on/off
-  1021: sprite x, y
+  5000: default data location
 
 */
 
@@ -95,11 +104,10 @@ Examples
 
 */
 const prog = `
-10 read x
-20 data 1, 2, 3
+10 data 20, 30, 40
+20 x = read()
+30 print x
 `;
-
-
 
 document.querySelector("#prog").value = prog;
 document.querySelector("#run").addEventListener('click', () => runProgram(document.querySelector("#prog").value));
@@ -166,10 +174,7 @@ const runProgram = (prog) => {
 
   clearInterval(runTimer);
 
-  // TODO: real reset!
-  ROM.cursorPos = 0;
-  ROM.pc = 0;
-  ROM.ram = [];
+  ROM.reset();
   ROM.screen.reset();
 
   // de-line number prog
@@ -193,7 +198,7 @@ const runProgram = (prog) => {
     }
   });
 
-  console.log(JSON.stringify(parsedCode, null, 2));
+  // TODO: load data?
 
   if (err) {
     ROM.bindings.print(err[0]);

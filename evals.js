@@ -75,7 +75,7 @@ const evalExpr = (expr, env) => {
         throw new Exception("No such function " + expr.name);
       }
       const args = expr.args.map(item => evalExpr(item, env));
-      return func.apply(null, args);
+      return func.apply(env, args);
     }
   case 'ident':
     return lookup(env, expr.name);

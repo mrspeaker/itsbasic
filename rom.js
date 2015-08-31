@@ -12,8 +12,21 @@ const env = {
   pc: 0,
 
   outer:{},
-  program: [],
+  reset: function () {
+    const ram = this.ram = [];
+    const rom = this.rom;
+
+    this.cursorPos = 0;
+    this.pc = 0;
+
+    ram[rom.BACKCOL] = 0;
+    ram[rom.FORECOL] = 1;
+    ram[rom.dataReadLoc] = rom.dataBaseLoc;
+    ram[rom.dataWriteLoc] = rom.dataBaseLoc;
+
+  },
   ram: [],
+  program: [],
   rom: {
     chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split(""),
     colors: ['HSL(0, 0%, 0%)', 'HSL(0, 0%, 100%)', 'HSL(8, 45%, 37%)','HSL(187, 42%, 63%)',
@@ -26,7 +39,10 @@ const env = {
     spriteEnableLoc: 1000,
     spriteXYLoc: 1021,
     BACKCOL: 0,
-    FORECOL: 1
+    FORECOL: 1,
+    dataReadLoc: 2,
+    dataWriteLoc: 3,
+    dataBaseLoc: 5000
   },
 
   bindings: {
@@ -38,7 +54,7 @@ const env = {
       if (typeof x !== 'undefined' && typeof y !== 'undefined') {
         env.cursorPos = y * env.charW + x;
       }
-      msg.split("").forEach(c => {
+      msg.toString().split("").forEach(c => {
         env.screen.chars[env.cursorPos].style.backgroundColor = env.rom.colors[env.ram[env.rom.BACKCOL]];
         env.screen.chars[env.cursorPos].style.color = env.rom.colors[env.ram[env.rom.FORECOL]];
 
@@ -98,12 +114,19 @@ const env = {
         env.screen.sprites[spriteNum].style[xo ? 'left' : 'top'] = val + 'px';
       }
     },
-    'rnd': (num) => Math.random() * num | 0
+    'rnd': (num) => Math.random() * num | 0,
+    'data': (...data) => {
+      const {ram, rom} = env;
+      data.forEach(d => ram[ram[rom.dataWriteLoc]++] = d);
+    },
+    'read': () => {
+      const {ram, rom} = env;
+      return ram[ram[rom.dataReadLoc]++];
+    }
   }
 };
 
-env.ram[env.rom.BACKCOL] = 0;
-env.ram[env.rom.FORECOL] = 1;
+env.reset();
 
 const charToBasicChar = (c) => {
   const code = c.charCodeAt(0);
