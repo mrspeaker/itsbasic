@@ -15,18 +15,20 @@ const peg = `
   string
     = '\\"' ch:[ a-z0-9]* '\\"' { return ch.join(''); }
 
+  keyword = "then"i
+
   validfirstchar = [a-zA-Z_]
   validchar = [0-9a-zA-Z_]
-  identifier = f:validfirstchar chars:validchar*
-    { return f + chars.join(''); }
+  identifier =
+    !keyword f:validfirstchar chars:validchar* { return f + chars.join(''); }
 
   statement
     = "if" sigws expr:expression sigws
-      "then" ws body:statements ws "endif" ws
-      { return { tag:"if", expr:expr, body:body }; }
-    / "if" sigws expr:expression sigws
       "then" ws goto:number
       { return { tag:"ifgoto", expr:expr, line:goto }; }
+    / "if" sigws expr:expression sigws
+      "then" ws body:statements ws "endif" ws
+      { return { tag:"if", expr:expr, body:body }; }
     / "poke" ws addr:expression ws "," ws val:expression ws
       { return { tag:"poke", address: addr, value: val}; }
     / "define " ws v:identifier ws "(" ws ")" ws
@@ -76,8 +78,10 @@ const peg = `
     / string
     / v:identifier "(" ws ")"
       { return {tag:"call", name:v, args:[]}; }
+    / v:identifier ws "(" ws args:arglist ws ")"
+        { return {tag:"call", _:"callExprA", name:v, args:args}; }
     / v:identifier ws args:arglist
-      { return {tag:"call", name:v, args:args}; }
+      { return {tag:"call", _:"callExprB", name:v, args:args}; }
     / v:identifier
       { return {tag:"ident", name:v}; }
     / "(" ws expression:expression ws ")"

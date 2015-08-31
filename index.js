@@ -11,7 +11,7 @@ const screen = require('./screen');
   print "msg"
   print "msg", x, y
   goto 10
-  if (x < 10) then 20
+  if x < 10 then 20
   poke addr, value
   poke 2042, 1 // first screen char is A
   poke 3042, 2 // first scrren char background col is red
@@ -21,15 +21,22 @@ const screen = require('./screen');
 
   probs:
 
-  if x < z then 10 // breaks on 'z'
-  if x < 10 then 10 // works fine.
-  if (x < 10 then 10 // inifintie loop
-  .. problem when "()" removed from function calls
-  same:
-  print "hey", rnd 35, x //fail
-  print "hey", rnd(35), x // fail
-  print "hey", (rnd 35), x // works.
+  ---
 
+  notes:
+
+  printing moves the cursor pos.
+
+  ---
+
+  todo:
+
+  cursor pos should be in RAM.
+  peeks
+  data/reads
+  set sprite data
+  if x < 10 then EXPR
+  
   ---
 
   Mem locations
@@ -63,16 +70,14 @@ const prog = `
 25 poke 1, w + 1
 28 poke 1021,w * 3
 29 poke 1022,w
-30 print "hey", ((rnd 25) + 10), x
+30 print "hey", rnd(25) + 10, x
 35 x=x+1:y=y+41:w=w+1:
-40 if (x < z) then 20
+40 if x < z then 20
 50 goto 10
-
 `;
 
 document.querySelector("#prog").value = prog;
 document.querySelector("#run").addEventListener('click', () => runProgram(document.querySelector("#prog").value));
-
 document.querySelector("#cli").addEventListener('keydown', ({which}) => {
   if (which === 13) {
     const val = document.querySelector("#cli").value;
@@ -150,7 +155,6 @@ const runProgram = (prog) => {
     }
     return [parseInt(lineNum, 10), l.slice(lineNum.toString().length)];
   }).filter(l => l[0] !== -1);
-
   // Parse the entire prog
   var err = null;
   const parsedCode = ROM.program.map(line => {
@@ -163,6 +167,8 @@ const runProgram = (prog) => {
       return null;
     }
   });
+
+  console.log(JSON.stringify(parsedCode, null, 2));
 
   if (err) {
     ROM.bindings.print(err[0]);
