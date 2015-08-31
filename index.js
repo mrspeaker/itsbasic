@@ -15,6 +15,7 @@ const screen = require('./screen');
   poke addr, value
   poke 2042, 1 // first screen char is A
   poke 3042, 2 // first scrren char background col is red
+  peek 2042 // read the address
   rnd 20 // random int between 0 and 19
 
   ---
@@ -32,7 +33,6 @@ const screen = require('./screen');
   todo:
 
   cursor pos should be in RAM.
-  peeks
   data/reads
   set sprite data
   if x < 10 then EXPR
@@ -53,12 +53,12 @@ const screen = require('./screen');
 const scr = screen("#screen", ROM);
 ROM.screen = scr;
 
-const prog9 = `
+const prog0 = `
 10 print "mrspeaker rulez  "
 20 goto 10
 `;
 
-const prog = `
+const prog1 = `
 10 x=0 : y=0:z=20: w=0: v=2042:
 15 poke 1000, 1
 16 poke 1021, 50: poke 1022, 50
@@ -75,6 +75,31 @@ const prog = `
 40 if x < z then 20
 50 goto 10
 `;
+
+const prog2 = `
+10 print "a"
+20 print "hey", 0, peek 2042
+`;
+
+/*
+Examples
+
+10 DATA 1,2,3,Apple,"Commodore 64"
+20 READ A
+30 READ B%, C, D$
+40 READ E$
+50 PRINT A, B%, C, D$, E$
+
+10 FOR X=0 TO 10: READ A(X): PRINT A(X),;:NEXT
+20 DATA 10,20,30,40,50,60,70,80,90,100,110
+
+*/
+const prog = `
+10 read x
+20 data 1, 2, 3
+`;
+
+
 
 document.querySelector("#prog").value = prog;
 document.querySelector("#run").addEventListener('click', () => runProgram(document.querySelector("#prog").value));

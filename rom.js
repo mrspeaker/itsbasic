@@ -62,6 +62,10 @@ const env = {
         throw new Error('Undefined line number ' + lineNumber);
       }
     },
+    'peek': addr => {
+      // TODO: bounds?
+      return env.ram[addr];
+    },
     'poke': (addr, val) => {
       env.ram[addr] = val;
 
