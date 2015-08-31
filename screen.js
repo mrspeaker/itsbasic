@@ -7,20 +7,28 @@ function screen (dom, ROM) {
   });
 
   const sprites = [...new Array(20)].map(() => {
-    const d = document.createElement("div");
-    d.className = "sprite";
-    screen.appendChild(d);
+    var can = document.createElement('canvas');
+    can.width = 24;
+    can.height = 24;
 
-    d.style.display = 'none';
-    d.style.left = 0;
-    d.style.top = 0;
-    d.style.backgroundColor = 'hsl(' + (Math.random() * 360 | 0) + ',50%, 50%)';
-    return d;
+    var ctx = can.getContext('2d');
+    ctx.fillStyle = `hsl(${Math.random() * 360 | 0}, 50%, 50%)`;
+    ctx.fillRect(0, 0, 24, 24);
+    const img = new Image();
+    img.src = can.toDataURL();
+    img.className = "sprite";
+    screen.appendChild(img);
+
+    img.style.display = 'none';
+    img.style.left = 0;
+    img.style.top = 0;
+
+    return img;
   });
 
   const reset = () => {
     chars.map(c => {
-      c.textContent = '!';
+      c.textContent = '*';
       c.style.backgroundColor = ROM.rom.colors[6];
       c.style.color = ROM.rom.colors[14];
     });

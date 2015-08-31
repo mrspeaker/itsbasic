@@ -24,13 +24,16 @@ const screen = require('./screen');
 
   probs:
 
-  return from rom binding only handles last statement.
+  * return from rom binding only handles last statement.
+    - 2 pokes on one line, only one gets executed!
+  * line numbers ignored (in init prog... need to sort/filter etc.)
 
   ---
 
   notes:
 
   printing moves the cursor pos.
+  have types? %, $?
 
   ---
 
@@ -103,10 +106,22 @@ Examples
 20 DATA 10,20,30,40,50,60,70,80,90,100,110
 
 */
-const prog = `
+const prog3 = `
 10 data 20, 30, 40
 20 x = read()
 30 print x
+`;
+
+const prog = `
+10 poke 1000, 1
+20 x = 0
+30 poke 1021, x
+35 poke 1022, rnd(10) + 10
+40 x = x + 1
+50 if x > 130 then 70
+60 goto 30
+70 x = 0
+80 goto 30
 `;
 
 document.querySelector("#prog").value = prog;
