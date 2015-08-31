@@ -11,8 +11,10 @@ function screen (dom, ROM) {
     d.className = "sprite";
     screen.appendChild(d);
 
-    d.style.left = (Math.random() * 320 | 0) + 'px';
-    d.style.top = (Math.random() * 200 | 0) + 'px';
+    d.style.display = 'none';
+    d.style.left = 0;
+    d.style.top = 0;
+    d.style.backgroundColor = 'hsl(' + (Math.random() * 360 | 0) + ',50%, 50%)';
     return d;
   });
 

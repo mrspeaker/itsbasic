@@ -23,7 +23,7 @@ const env = {
     vidMemLoc: 2042,
     vidColBackLoc: 3042,
     vidColForeLoc: 4042,
-    spriteOnOffLoc: 1000,
+    spriteEnableLoc: 1000,
     spriteXYLoc: 1021,
     BACKCOL: 0,
     FORECOL: 1
@@ -81,6 +81,12 @@ const env = {
         env.screen.chars[addr - env.rom.vidColForeLoc].style.color = env.rom.colors[val];
       }
 
+      // sprites
+      if (addr >= env.rom.spriteEnableLoc && addr <= env.rom.spriteEnableLoc + 20) {
+        const spriteNum = addr - env.rom.spriteEnableLoc;
+        // todo... move to screen
+        env.screen.sprites[spriteNum].style.display = val === 1 ? 'block' : 'none';
+      }
       if (addr >= env.rom.spriteXYLoc && addr <= env.rom.spriteXYLoc + (20 * 2)) {
         const offset = addr - env.rom.spriteXYLoc;
         const spriteNum = offset / 2 | 0;
