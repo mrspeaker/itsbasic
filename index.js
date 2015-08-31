@@ -36,7 +36,7 @@ const screen = require('./screen');
   data/reads
   set sprite data
   if x < 10 then EXPR
-  
+
   ---
 
   Mem locations
@@ -54,7 +54,7 @@ const scr = screen("#screen", ROM);
 ROM.screen = scr;
 
 const prog9 = `
-10 print "earle rulez  "
+10 print "mrspeaker rulez  "
 20 goto 10
 `;
 
