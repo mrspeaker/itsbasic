@@ -125,15 +125,7 @@ const evalStatement = (stmt, env) => {
     }
     return val;
 
-  case 'poke':
-    {
-
-      const addr = evalExpr(stmt.address, env);
-      const val_ = evalExpr(stmt.value, env); // grr, chrome no block scope.
-      return {type: 'poke', addr, val: val_};
-    }
-
-  case 'define':
+  case 'def':
     // name args body
     const new_func = function() {
       // This function takes any number of arguments
