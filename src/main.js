@@ -1,7 +1,7 @@
-const parse = require('./src/parser');
-const evals = require('./src/evals');
-const ROM = require('./src/rom');
-const screen = require('./src/screen');
+const parse = require('./parser');
+const evals = require('./evals');
+const ROM = require('./rom');
+const screen = require('./screen');
 
 /*
   Implemented:
