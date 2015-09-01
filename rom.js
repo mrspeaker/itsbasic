@@ -105,14 +105,14 @@ const env = {
       // sprites
       if (addr >= env.rom.spriteEnableLoc && addr <= env.rom.spriteEnableLoc + 20) {
         const spriteNum = addr - env.rom.spriteEnableLoc;
-        // todo... move to screen
-        env.screen.sprites[spriteNum].style.display = val === 1 ? 'block' : 'none';
+
+        env.screen.setSprite(spriteNum, val);
       }
       if (addr >= env.rom.spriteXYLoc && addr <= env.rom.spriteXYLoc + (20 * 2)) {
         const offset = addr - env.rom.spriteXYLoc;
         const spriteNum = offset / 2 | 0;
         const xo = offset % 2 === 0;
-        env.screen.sprites[spriteNum].style[xo ? 'left' : 'top'] = val + 'px';
+        env.screen.moveSprite(spriteNum, xo, val);
       }
     },
     'rnd': (num) => Math.random() * num | 0,

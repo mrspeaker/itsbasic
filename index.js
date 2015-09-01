@@ -67,12 +67,12 @@ const screen = require('./screen');
 const scr = screen("#screen", ROM);
 ROM.screen = scr;
 
-const prog0 = `
+const progs = [['classic',`
 10 print "mrspeaker rulez  "
 20 goto 10
-`;
+`],
 
-const prog1 = `
+['text cols', `
 10 x=0 : y=0:z=20: w=0: v=2042:
 15 poke 1000, 1
 16 poke 1021, 50: poke 1022, 50
@@ -88,12 +88,13 @@ const prog1 = `
 35 x=x+1:y=y+41:w=w+1:
 40 if x < z then 20
 50 goto 10
-`;
+`],
 
-const prog2 = `
-10 print "a"
-20 print "hey", 0, peek 2042
-`;
+['peek value', `
+10 print "b"
+15 x = "peeked val " + peek 2042
+20 print x, 2, 2
+`],
 
 /*
 Examples
@@ -108,22 +109,25 @@ Examples
 20 DATA 10,20,30,40,50,60,70,80,90,100,110
 
 */
-const prog3 = `
+['read data', `
+5 print "read data"
 10 data 20, 30, 40
 20 x = read()
-30 print x
-`;
+30 print x, 10, 10
+`],
 
-const prog = `
+['sprites',`
+5 print "sprites", 20, 0
 10 poke 1000, 1: poke 1001, 1
 20 x = 0
 30 poke 1021, cos(x / 60) * 60 + 100
 35 poke 1022, sin(x / 100) * 60 + 130
 40 x = x + 1
 80 goto 30
-`;
+`]
+];
 
-document.querySelector("#prog").value = prog;
+document.querySelector("#prog").value = progs[4][1];
 document.querySelector("#run").addEventListener('click', () => runProgram(document.querySelector("#prog").value));
 document.querySelector("#cli").addEventListener('keydown', ({which}) => {
   if (which === 13) {
@@ -132,6 +136,18 @@ document.querySelector("#cli").addEventListener('keydown', ({which}) => {
     ROM.screen.update();
   }
 });
+const selectProgs = document.querySelector("#progs");
+progs.forEach((p, i) => {
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.selected = i === 4;
+  opt.innerHTML = p[0];
+  selectProgs.appendChild(opt);
+});
+selectProgs.onchange = (e) => {
+  document.querySelector("#prog").value = progs[e.target.value][1];
+  runProgram(document.querySelector("#prog").value);
+};
 var runTimer = null;
 
 const execLine = (line, ROM, lineNumber = -1, alreadyParsed = false) => {
@@ -191,12 +207,16 @@ const runProgram = (prog) => {
 
   // de-line number prog
   ROM.program = prog.split("\n").map(l => {
-    const lineNum = l.match(/[0-9]*[\s]+/);
+    const lineNum = parseInt(l.match(/[0-9]*[\s]+/), 10);
     if (!lineNum) {
       return [-1];
     }
     return [parseInt(lineNum, 10), l.slice(lineNum.toString().length)];
-  }).filter(l => l[0] !== -1);
+  })
+    .filter(l => l[0] !== -1)
+    .sort((a, b) => a[0] - b[0]);
+  // remove if duplicate...
+
   // Parse the entire prog
   var err = null;
   const parsedCode = ROM.program.map(line => {
@@ -237,3 +257,4 @@ const runProgram = (prog) => {
     }, 1000/60);
   }
 };
+document.querySelector("#run").click();

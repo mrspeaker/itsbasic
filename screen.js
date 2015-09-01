@@ -32,6 +32,13 @@ function screen (dom, ROM) {
       c.style.backgroundColor = ROM.rom.colors[6];
       c.style.color = ROM.rom.colors[14];
     });
+
+    sprites.map((s, i) => {
+      setSprite(i, 0);
+      moveSprite(i, true, 0);
+      moveSprite(i, false, 0);
+    });
+    
   };
 
   const update = () => {
@@ -41,11 +48,22 @@ function screen (dom, ROM) {
     });
   };
 
+  const setSprite = (num, val) => {
+    // todo... move to screen
+    sprites[num].style.display = val === 1 ? 'block' : 'none';
+  };
+
+  const moveSprite = (num, isX, pos) => {
+    sprites[num].style[isX ? 'left' : 'top'] = pos + 'px';
+  };
+
   return {
     chars,
     sprites,
     reset,
-    update
+    update,
+    setSprite,
+    moveSprite
   };
 }
 
