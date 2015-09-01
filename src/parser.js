@@ -53,10 +53,10 @@ const peg = `
   expression
     = expr:comparative { return expr; }
 
-  comp_op = "<=" / ">=" / "!=" / "==" / "<" / ">"
+  comp_op = "<=" / ">=" / "==" / "<>" / "<" / ">"
   comparative
     = left:additive ws op:comp_op ws right:comparative
-      { return {tag: op, left:left, right:right}; }
+      { return {tag:'call', name:op, args:[left, right]}; }
     / additive
 
   additive_op = "+" / "-"

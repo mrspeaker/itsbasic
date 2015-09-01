@@ -50,7 +50,18 @@ const env = {
     '-': (x, y) => x - y,
     '*': (x, y) => x * y,
     '/': (x, y) => x / y,
+    '==': (x, y) => x === y,
+    '<>': (x, y) => x !== y,
+    '>': (x, y) => x > y,
+    '<': (x, y) => x < y,
+    '>=': (x, y) => x >= y,
+    '<=': (x, y) => x <= y,
+    'sin': a => Math.sin(a),
+    'cos': a => Math.cos(a),
+    'tan': a => Math.tan(a),
+    'atan2': (y, x) => Math.atan2(y, x),
     'mod': (x, y) => x % y,
+    'con': (...args) => console.log(...args),
     'print': (msg, x, y) => {
       if (typeof x !== 'undefined' && typeof y !== 'undefined') {
         env.cursorPos = y * env.charW + x;
@@ -84,35 +95,33 @@ const env = {
       return env.ram[addr];
     },
     'poke': (addr, val) => {
-      env.ram[addr] = val;
+      const {ram, rom, screen} = env;
 
-      if (addr >= env.rom.vidMemLoc &&
-        addr < env.rom.vidMemLoc + 1000) {
-        env.screen.chars[addr - env.rom.vidMemLoc].style.backgroundColor = env.rom.colors[env.ram[env.rom.BACKCOL]];
-        env.screen.chars[addr - env.rom.vidMemLoc].style.color = env.rom.colors[env.ram[env.rom.FORECOL]];
+      ram[addr] = val;
+
+      if (addr >= rom.vidMemLoc && addr < rom.vidMemLoc + 1000) {
+        screen.chars[addr - rom.vidMemLoc].style.backgroundColor = rom.colors[ram[rom.BACKCOL]];
+        screen.chars[addr - rom.vidMemLoc].style.color = rom.colors[ram[rom.FORECOL]];
       }
 
       // Update color
-      if (addr >= env.rom.vidColBackLoc &&
-        addr < env.rom.vidColBackLoc + 1000) {
-        env.screen.chars[addr - env.rom.vidColBackLoc].style.backgroundColor = env.rom.colors[val];
+      if (addr >= rom.vidColBackLoc && addr < rom.vidColBackLoc + 1000) {
+        screen.chars[addr - rom.vidColBackLoc].style.backgroundColor = rom.colors[val];
       }
-      if (addr >= env.rom.vidColForeLoc &&
-        addr < env.rom.vidColForeLoc + 1000) {
-        env.screen.chars[addr - env.rom.vidColForeLoc].style.color = env.rom.colors[val];
+      if (addr >= rom.vidColForeLoc && addr < rom.vidColForeLoc + 1000) {
+        screen.chars[addr - rom.vidColForeLoc].style.color = rom.colors[val];
       }
 
       // sprites
-      if (addr >= env.rom.spriteEnableLoc && addr <= env.rom.spriteEnableLoc + 20) {
-        const spriteNum = addr - env.rom.spriteEnableLoc;
-
-        env.screen.setSprite(spriteNum, val);
+      if (addr >= rom.spriteEnableLoc && addr <= rom.spriteEnableLoc + 20) {
+        const spriteNum = addr - rom.spriteEnableLoc;
+        screen.setSprite(spriteNum, val);
       }
-      if (addr >= env.rom.spriteXYLoc && addr <= env.rom.spriteXYLoc + (20 * 2)) {
-        const offset = addr - env.rom.spriteXYLoc;
+      if (addr >= rom.spriteXYLoc && addr <= rom.spriteXYLoc + (20 * 2)) {
+        const offset = addr - rom.spriteXYLoc;
         const spriteNum = offset / 2 | 0;
         const xo = offset % 2 === 0;
-        env.screen.moveSprite(spriteNum, xo, val);
+        screen.moveSprite(spriteNum, xo, val);
       }
     },
     'rnd': (num) => Math.random() * num | 0,
@@ -122,12 +131,10 @@ const env = {
     },
     'read': () => {
       const {ram, rom} = env;
-      return ram[ram[rom.dataReadLoc]++];
-    },
-    'sin': a => Math.sin(a),
-    'cos': a => Math.cos(a),
-    'tan': a => Math.tan(a),
-    'atan2': (y, x) => Math.atan2(y, x),
+      const back =  ram[ram[rom.dataReadLoc]++];
+      console.log(back);
+      return back;
+    }
   }
 };
 

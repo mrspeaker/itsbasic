@@ -8,6 +8,7 @@ const screen = require('./screen');
 
   x = 1
   x = y + 1
+  == <> < > >= <=
   print "msg"
   print "msg", x, y
   goto 10
@@ -21,6 +22,7 @@ const screen = require('./screen');
   read() //  reads data from memory (readLoc ) read must happen after data.
   cos, sin, tan, atan2
   mod
+  con // console.log variable
 
 
   ---
@@ -257,4 +259,3 @@ const runProgram = (prog) => {
     }, 1000/60);
   }
 };
-document.querySelector("#run").click();

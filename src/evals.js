@@ -42,12 +42,6 @@ const add_binding = (env, stmt, value) => {
     e = e.outer;
   }
 
-  if ('bindings' in env === false) {
-    console.error("do i get here?");
-    env.bindings = {};
-    env.outer = {};
-  }
-
   env.bindings[stmt] = value;
 };
 
@@ -58,57 +52,47 @@ const evalExpr = (expr, env) => {
   }
 
   switch(expr.tag) {
-  case '!=':
-    return evalExpr(expr.left, env) != evalExpr(expr.right, env);
-  case '>':
-    return evalExpr(expr.left, env) > evalExpr(expr.right, env);
-  case '<':
-    return evalExpr(expr.left, env) < evalExpr(expr.right, env);
-  case '>=':
-    return evalExpr(expr.left, env) >= evalExpr(expr.right, env);
-  case '<=':
-    return evalExpr(expr.left, env) <= evalExpr(expr.right, env);
   case 'call':
-    {
-      const func = lookup(env, expr.name);
-      if (!func) {
-        throw new Exception("No such function " + expr.name);
-      }
-      const args = expr.args.map(item => evalExpr(item, env));
-      return func.apply(env, args);
+    const func = lookup(env, expr.name);
+    if (!func) {
+      throw new Exception("No such function " + expr.name);
     }
+    const args = expr.args.map(item => evalExpr(item, env));
+    return func.apply(env, args);
+
   case 'ident':
     return lookup(env, expr.name);
+
   default:
     console.log("expr not found", expr);
     //const func = lookup(env, expr.name);
+
   }
 };
 
+
 const evalStatement = (stmt, env) => {
   var val;
+
+  // Special forms
   switch(stmt.tag) {
 
-  // A single expression
   case 'ignore':
-    // Just evaluate expression
     return evalExpr(stmt.body, env);
 
-  // Repeat
   case 'repeat':
     const count = evalExpr(stmt.expr, env);
     var lastValue = 0;
-
     for (var i = 0; i < count; ++i) {
       lastValue = evalStatements(stmt.body, env);
     }
     return lastValue;
 
   case '=':
+    // Create var if not exists yet.
     if (!exists(env, stmt.left)) {
       add_binding(env, stmt.left, 0);
     }
-    // Evaluate right hand side
     val = evalExpr(stmt.right, env);
     update(env, stmt.left, val);
     return val;
@@ -126,19 +110,16 @@ const evalStatement = (stmt, env) => {
     return val;
 
   case 'def':
-    // name args body
-    const new_func = function() {
-      // This function takes any number of arguments
-      var i;
-      const new_bindings = { };
-      for (i = 0; i < stmt.args.length; i++) {
-        new_bindings[stmt.args[i]] = arguments[i];
-      }
-      const new_env = { bindings: new_bindings, outer: env };
-      return evalStatements(stmt.body, new_env);
+    const func = function() {
+      const bindings = stmt.args.reduce((b, arg, i) => {
+        b[arg] = arguments[i];
+        return b;
+      }, {});
+      const newEnv = { bindings, outer: env };
+      return evalStatements(stmt.body, newEnv);
     };
 
-    add_binding(env, stmt.name, new_func);
+    add_binding(env, stmt.name, func);
     return 0;
 
   default:
@@ -147,23 +128,13 @@ const evalStatement = (stmt, env) => {
 };
 
 const evalStatements = (stmts, env) => {
-  var i;
-  var val;
-  for (i = 0; i < stmts.length; i++) {
-    val = evalStatement(stmts[i], env);
-  }
-  return val;
+  return stmts.reduce((val, s) => evalStatement(s, env), 0);
 };
 
 const evalProg = (lines, env) => {
-  var i;
-  var val;
-  for (i = 0; i < lines.length; i++) {
-    for (var j = 0; j < lines[i].stmts.length; j++) {
-      val = evalStatement(lines[i].stmts[j], env);
-    }
-  }
-  return val;
+  return lines.reduce((val, ss) => {
+    return evalStatements(ss, env);
+  }, 0);
 };
 
 module.exports = {
