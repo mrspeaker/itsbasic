@@ -1,4 +1,3 @@
-// Env...
 const w = 320;
 const h = 200;
 
@@ -61,6 +60,7 @@ const env = {
     'tan': a => Math.tan(a),
     'atan2': (y, x) => Math.atan2(y, x),
     'mod': (x, y) => x % y,
+    'rnd': (num) => Math.random() * num | 0,
     'con': (...args) => console.log(...args),
     'print': (msg, x, y) => {
       if (typeof x !== 'undefined' && typeof y !== 'undefined') {
@@ -90,10 +90,7 @@ const env = {
         throw new Error('Undefined line number ' + lineNumber);
       }
     },
-    'peek': addr => {
-      // TODO: bounds?
-      return env.ram[addr];
-    },
+    'peek': addr => env.ram[addr],
     'poke': (addr, val) => {
       const {ram, rom, screen} = env;
 
@@ -124,7 +121,6 @@ const env = {
         screen.moveSprite(spriteNum, xo, val);
       }
     },
-    'rnd': (num) => Math.random() * num | 0,
     'data': (...data) => {
       const {ram, rom} = env;
       data.forEach(d => ram[ram[rom.dataWriteLoc]++] = d);

@@ -201,7 +201,6 @@ const execLine = (line, ROM, lineNumber = -1, alreadyParsed = false) => {
 };
 
 const runProgram = (prog) => {
-
   clearInterval(runTimer);
 
   ROM.reset();
@@ -217,7 +216,7 @@ const runProgram = (prog) => {
   })
     .filter(l => l[0] !== -1)
     .sort((a, b) => a[0] - b[0]);
-  // remove if duplicate...
+    // TODO: remove if duplicate...
 
   // Parse the entire prog
   var err = null;
@@ -232,7 +231,7 @@ const runProgram = (prog) => {
     }
   });
 
-  // TODO: load data?
+  // TODO: load DATA statments?
 
   if (err) {
     ROM.bindings.print(err[0]);
