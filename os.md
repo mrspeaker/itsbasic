@@ -29,7 +29,7 @@ not or and xor
 math funcs... / + - * = < > sin cos atan2
 exp, mod
 input
-rect? circle?
+rect? circle? line? yeah!
 gosub?
 list, rnd,
 save, load

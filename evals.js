@@ -125,11 +125,6 @@ const evalStatement = (stmt, env) => {
     }
     return val;
 
-  case 'goto':
-  // todo: moove to rom?
-    val = {go:stmt.line};
-    return val;
-
   case 'poke':
     {
 

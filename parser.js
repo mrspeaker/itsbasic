@@ -29,8 +29,6 @@ const peg = `
     / "if" sigws expr:expression sigws
       "then" ws body:statements ws "endif" ws
       { return { tag:"if", expr:expr, body:body }; }
-    / "poke" ws addr:expression ws "," ws val:expression ws
-      { return { tag:"poke", address: addr, value: val}; }
     / "define " ws v:identifier ws "(" ws ")" ws
       "{" ws body:statements ws "}" ws
       { return { tag:"define", name:v, args:[], body:body }; }

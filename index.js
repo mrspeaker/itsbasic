@@ -21,14 +21,13 @@ const screen = require('./screen');
   read() //  reads data from memory (readLoc ) read must happen after data.
   cos, sin, tan, atan2
   mod
-  
+
 
   ---
 
   probs:
 
   * return from rom binding only handles last statement.
-    - 2 pokes on one line, only one gets executed!
   * line numbers ignored (in init prog... need to sort/filter etc.)
 
   ---
@@ -116,8 +115,7 @@ const prog3 = `
 `;
 
 const prog = `
-10 poke 1000, 1
-11 poke 1001, 1
+10 poke 1000, 1: poke 1001, 1
 20 x = 0
 30 poke 1021, cos(x / 60) * 60 + 100
 35 poke 1022, sin(x / 100) * 60 + 130
@@ -171,11 +169,9 @@ const execLine = (line, ROM, lineNumber = -1, alreadyParsed = false) => {
         ROM.bindings.goto(res.go);
         ROM.pc--;
       }
+      // Nope... what? a if/goto will pc-- twice?
       if (res.went) {
         ROM.pc--;
-      }
-      if (res.type === 'poke') {
-        ROM.bindings.poke(res.addr, res.val);
       }
     } catch (e) {
       ROM.bindings.print(e.message.toLowerCase() + " in " + lineNumber);
