@@ -187,7 +187,6 @@ const execLine = (line, ROM, lineNumber = -1, alreadyParsed = false) => {
         ROM.bindings.goto(res.go);
         ROM.pc--;
       }
-      // Nope... what? a if/goto will pc-- twice?
       if (res.went) {
         ROM.pc--;
       }
@@ -216,7 +215,7 @@ const runProgram = (prog) => {
   })
     .filter(l => l[0] !== -1)
     .sort((a, b) => a[0] - b[0]);
-    // TODO: remove if duplicate...
+    // TODO: remove if duplicates...
 
   // Parse the entire prog
   var err = null;
@@ -237,24 +236,26 @@ const runProgram = (prog) => {
     ROM.bindings.print(err[0]);
     ROM.screen.update();
     console.error("parse.", err[1].message, err[1]);
-  } else {
-    // Run the 'puter
-    runTimer = setInterval(() => {
-      if (ROM.pc >= ROM.program.length) {
-        return;
-      }
-
-      // x instructions per frame
-      for (var i = 0; i < 10; i++) {
-        execLine(parsedCode[ROM.pc], ROM, ROM.program[ROM.pc][0], true);
-        ROM.pc++;
-        if (ROM.pc >= ROM.program.length) {
-          break;
-        }
-      }
-
-      ROM.screen.update();
-
-    }, 1000/60);
+    return;
   }
+
+  // Run the 'puter
+  runTimer = setInterval(() => {
+    if (ROM.pc >= ROM.program.length) {
+      return;
+    }
+
+    // x instructions per frame
+    for (var i = 0; i < 10; i++) {
+      execLine(parsedCode[ROM.pc], ROM, ROM.program[ROM.pc][0], true);
+      ROM.pc++;
+      if (ROM.pc >= ROM.program.length) {
+        break;
+      }
+    }
+
+    ROM.screen.update();
+
+  }, 1000/60);
+
 };

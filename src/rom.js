@@ -18,8 +18,8 @@ const env = {
     this.cursorPos = 0;
     this.pc = 0;
 
-    ram[rom.BACKCOL] = 0;
-    ram[rom.FORECOL] = 1;
+    ram[rom.BACKCOL] = 6;
+    ram[rom.FORECOL] = 14;
     ram[rom.dataReadLoc] = rom.dataBaseLoc;
     ram[rom.dataWriteLoc] = rom.dataBaseLoc;
 
@@ -85,7 +85,7 @@ const env = {
       if (line) {
         env.pc = env.program.indexOf(line);
         // TODO: hmm... fix goto20 and if()then20
-        return { went: line };
+        return { went: lineNumber };
       } else {
         throw new Error('Undefined line number ' + lineNumber);
       }
@@ -127,9 +127,7 @@ const env = {
     },
     'read': () => {
       const {ram, rom} = env;
-      const back =  ram[ram[rom.dataReadLoc]++];
-      console.log(back);
-      return back;
+      return ram[ram[rom.dataReadLoc]++];
     }
   }
 };
