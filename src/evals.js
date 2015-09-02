@@ -122,6 +122,10 @@ const evalStatement = (stmt, env) => {
     add_binding(env, stmt.name, func);
     return 0;
 
+  case 'comment':
+    // TODO: remove from input.
+    return null;
+    
   default:
     console.log("syntax error? unknown statement:", stmt.tag);
   }

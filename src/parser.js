@@ -3,6 +3,8 @@ const peg = `
   start
     = ws seq:statements { return seq; }
 
+  char = [ a-zA-Z0-9\\?\\!]
+
   number_frac
     = '.' chars:[0-9]* { return '.' + chars.join(''); }
 
@@ -15,6 +17,8 @@ const peg = `
   string
     = '\\"' ch:[ a-z0-9]* '\\"' { return ch.join(''); }
 
+  comment = init:'#' rest:char* { return init + rest.join('');}
+
   keyword = "then"i
 
   validfirstchar = [a-zA-Z_]
@@ -23,7 +27,8 @@ const peg = `
     !keyword f:validfirstchar chars:validchar* { return f + chars.join(''); }
 
   statement
-    = "if" sigws expr:expression sigws
+    = c:comment { return { tag: "comment", val: c} }
+    / "if" sigws expr:expression sigws
       "then" ws goto:number
       { return { tag:"ifgoto", expr:expr, line:goto }; }
     / "if" sigws expr:expression sigws
