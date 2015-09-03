@@ -55,6 +55,8 @@ input (keys)
     1: foreground color
     2: data read location
     3: data write location
+    4: screen cursor position
+    5: current program line
     1000: sprites on/off
     1021: sprite x, y
     2042: screen char memory

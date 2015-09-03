@@ -4,7 +4,6 @@ const rom = require('./ROM');
 const w = 320;
 const h = 200;
 
-
 // Too much info in env. Should be moved to "computer"
 // env should just be outer/bindings for the evaluator.
 
@@ -14,14 +13,11 @@ const env = {
   charW: w / 8,
   charH: h / 8,
 
-  cursorPos: 0, // should be in RAM
-  pc: 0,
-
   reset: function () {
     const ram = this.ram = [];
-    this.cursorPos = 0;
-    this.pc = 0;
 
+    ram[rom.pc] = 0;
+    ram[rom.cursorPos] = 0;
     ram[rom.BACKCOL] = 6;
     ram[rom.FORECOL] = 14;
     ram[rom.dataReadLoc] = rom.dataBaseLoc;
@@ -55,8 +51,9 @@ const env = {
     'rnd': (num) => Math.random() * num | 0,
     'con': (...args) => console.log(...args),
     'print': (msg, x, y) => {
+      const {ram, rom} = env;
       if (typeof x !== 'undefined' && typeof y !== 'undefined') {
-        env.cursorPos = y * env.charW + x;
+        ram[rom.cursorPos] = y * env.charW + x;
       }
 
       const charToBasicChar = (c) => {
@@ -66,21 +63,21 @@ const env = {
       };
 
       msg.toString().split('').forEach(c => {
-        env.bindings.poke(env.rom.vidMemLoc + (env.cursorPos++), charToBasicChar(c));
+        env.bindings.poke(env.rom.vidMemLoc + (ram[rom.cursorPos]++), charToBasicChar(c));
 
         // Wrap curosr
-        if (env.cursorPos >= env.charW * env.charH) {
-          env.cursorPos -= env.charW * env.charH;
+        if (ram[rom.cursorPos] >= env.charW * env.charH) {
+          ram[rom.cursorPos] -= env.charW * env.charH;
         }
-        if (env.cursorPos < 0) {
-          env.cursorPos += env.charW * env.charH;
+        if (ram[rom.cursorPos] < 0) {
+          ram[rom.cursorPos] += env.charW * env.charH;
         }
       });
     },
     'goto': lineNumber => {
       const line = env.program.find(l => l[0] === lineNumber);
       if (line) {
-        env.pc = env.program.indexOf(line);
+        env.ram[env.rom.pc] = env.program.indexOf(line);
         // TODO: hmm... fix goto20 and if()then20
         return { went: lineNumber };
       } else {

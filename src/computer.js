@@ -36,13 +36,15 @@ const exec = (line, env = env, lineNumber = -1, alreadyParsed = false) => {
 
   // Response to exec
   if (res) {
+    const pc = env.rom.pc;
+    const ram = env.ram;
     try {
       if (res.go) {
         env.bindings.goto(res.go);
-        env.pc--;
+        ram[pc]--;
       }
       if (res.went) {
-        env.pc--;
+        ram[pc]--;
       }
     } catch (e) {
       env.bindings.print(e.message.toLowerCase() + ' in ' + lineNumber);
@@ -90,17 +92,20 @@ const load = (prog) => {
     return;
   }
 
+  const pc = env.rom.pc;
+  const ram = env.ram;
+
   // Run the 'puter
   runTimer = setInterval(() => {
-    if (env.pc >= env.program.length) {
+    if (ram[pc] >= env.program.length) {
       return;
     }
 
     // x instructions per frame
     for (var i = 0; i < 10; i++) {
-      exec(parsedCode[env.pc], env, env.program[env.pc][0], true);
-      env.pc++;
-      if (env.pc >= env.program.length) {
+      exec(parsedCode[ram[pc]], env, env.program[ram[pc]][0], true);
+      ram[pc]++;
+      if (ram[pc] >= env.program.length) {
         break;
       }
     }
