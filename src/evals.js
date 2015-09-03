@@ -55,7 +55,7 @@ const evalExpr = (expr, env) => {
   case 'call':
     const func = lookup(env, expr.name);
     if (!func) {
-      throw new Exception("No such function " + expr.name);
+      throw new Exception('No such function ' + expr.name);
     }
     const args = expr.args.map(item => evalExpr(item, env));
     return func.apply(env, args);
@@ -64,7 +64,7 @@ const evalExpr = (expr, env) => {
     return lookup(env, expr.name);
 
   default:
-    console.log("expr not found", expr);
+    console.log('expr not found', expr);
     //const func = lookup(env, expr.name);
 
   }
@@ -125,9 +125,9 @@ const evalStatement = (stmt, env) => {
   case 'comment':
     // TODO: remove from input.
     return null;
-    
+
   default:
-    console.log("syntax error? unknown statement:", stmt.tag);
+    console.log('syntax error? unknown statement:', stmt.tag);
   }
 };
 
