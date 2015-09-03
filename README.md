@@ -41,6 +41,8 @@ have types? %, $?
 
 ## next todos:
 
+cls
+change run/stop to real stop (break) and reset.
 for loop
 cursor pos should be in RAM.
 set sprite data

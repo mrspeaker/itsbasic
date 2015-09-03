@@ -5,12 +5,14 @@ const $$ = (sel) => document.querySelector(sel);
 const defaultProggy = 4;
 
 $$('#prog').value = progs[defaultProggy][1];
-$$('#run').addEventListener('click', () => computer.load($$('#prog').value));
+$$('#load').addEventListener('click', () => computer.load($$('#prog').value), false);
+$$('#run').addEventListener('click', computer.run, false);
+$$('#stop').addEventListener('click', computer.runstop, false);
 $$('#cli').addEventListener('keydown', ({which}) => {
   if (which === 13) {
     computer.eval($$('#cli').value);
   }
-});
+}, false);
 
 const selectProgs = $$('#progs');
 progs.forEach((p, i) => {
@@ -24,4 +26,4 @@ progs.forEach((p, i) => {
 selectProgs.addEventListener('change', e => {
   $$('#prog').value = progs[e.target.value][1];
   computer.load($$('#prog').value);
-});
+}, false);

@@ -19,7 +19,7 @@ const exec = (line, env = env, lineNumber = -1, alreadyParsed = false) => {
     } catch (e) {
       env.bindings.print('syntax error in ' + lineNumber + ' col ' + e.offset);
       console.error('parse.', e.message, e);
-      clearInterval(runTimer);
+      runstop();
       return;
     }
   }
@@ -30,7 +30,7 @@ const exec = (line, env = env, lineNumber = -1, alreadyParsed = false) => {
   } catch (e) {
     env.bindings.print('exec error in ' + lineNumber);
     console.error('exec.', e.message, e);
-    clearInterval(runTimer);
+    runstop();
     return;
   }
 
@@ -55,8 +55,8 @@ const exec = (line, env = env, lineNumber = -1, alreadyParsed = false) => {
 };
 
 const load = (prog) => {
-  clearInterval(runTimer);
 
+  runstop();
   env.reset();
 
   // de-line number prog
@@ -73,7 +73,7 @@ const load = (prog) => {
 
   // Parse the entire prog
   var err = null;
-  const parsedCode = env.program.map(line => {
+  env.parsedCode = env.program.map(line => {
     if (err) return;
     try {
       const parsed = parse(line[1]);
@@ -90,7 +90,14 @@ const load = (prog) => {
     env.bindings.print(err[0]);
     console.error('parse.', err[1].message, err[1]);
     return;
+  } else {
+    env.bindings.print("ready ");
   }
+
+};
+
+
+const run = () => {
 
   const pc = env.rom.pc;
   const ram = env.ram;
@@ -103,18 +110,22 @@ const load = (prog) => {
 
     // x instructions per frame
     for (var i = 0; i < 10; i++) {
-      exec(parsedCode[ram[pc]], env, env.program[ram[pc]][0], true);
+      exec(env.parsedCode[ram[pc]], env, env.program[ram[pc]][0], true);
       ram[pc]++;
       if (ram[pc] >= env.program.length) {
         break;
       }
     }
 
-  }, 1000/60);
+  }, 1000 / 60);
 
 };
 
+const runstop = () => clearInterval(runTimer);
+
 module.exports = {
   load,
-  exec
+  run,
+  exec,
+  runstop
 };
