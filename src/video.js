@@ -1,4 +1,5 @@
 const Interupt = require('./Interupt');
+const font = require('./font');
 
 function video (dom, env) {
 
@@ -14,9 +15,12 @@ function video (dom, env) {
       dom.style.color = rom.colors[ram[rom.FORECOL]];
       dom.textContent = rom.chars[val];
 
+
       // TODO!!! this is sometimes 16. lol.
-      const col = palData[ram[rom.BACKCOL] % 16];
-      drawGlyph(charLoc % env.charW * 8, (charLoc / env.charW | 0) * 8, col);
+      const backCol = palData[ram[rom.BACKCOL] % 16];
+      drawGlyph(charLoc % env.charW * 8, (charLoc / env.charW | 0) * 8, backCol);
+      const foreCol = palData[ram[rom.FORECOL] % 16];
+      plot(charLoc % env.charW * 8, (charLoc / env.charW | 0) * 8, val, foreCol);
     }
 
     // Update color
@@ -76,7 +80,7 @@ function video (dom, env) {
     return d;
   });
 
-  const data = c.getImageData(0, 0, env.w, env.h);
+  var data = c.getImageData(0, 0, env.w, env.h);
   const setPixel = (x, y, col) => {
     const offset = (y * env.w + x) * 4;
     data.data[offset] = col.r;
@@ -91,10 +95,22 @@ function video (dom, env) {
     }
   };
 
+  const plot = (x, y, letter, col) => {
+    const l = font[letter % font.length];
+    if (!l) {
+      //console.log(letter, font)
+      return;
+    }
+    for (var j = 0; j < 8; j ++) {
+      for (var i = 0; i < 8; i++) {
+        if (l[j][i]) {
+          setPixel(x + i, y + j, col);
+        }
+      }
+    }
+  };
+
   const update = () => {
-    /*drawGlyph(
-      (Math.random() * env.charW | 0) * 8,
-      (Math.random() * env.charH | 0) * 8);*/
     c.putImageData(data, 0, 0);
   };
 
@@ -126,10 +142,10 @@ function video (dom, env) {
   });
 
   const reset = () => {
-    chars.map(c => {
-      c.textContent = ' ';
-      c.style.backgroundColor = env.rom.colors[6];
-      c.style.color = env.rom.colors[14];
+    chars.map(ch => {
+      ch.textContent = ' ';
+      ch.style.backgroundColor = env.rom.colors[6];
+      ch.style.color = env.rom.colors[14];
     });
 
     sprites.map((s, i) => {
@@ -137,6 +153,10 @@ function video (dom, env) {
       moveSprite(i, true, 0);
       moveSprite(i, false, 0);
     });
+
+    c.fillStyle = env.rom.colors[6];
+    c.fillRect(0, 0, env.w, env.h);
+    data = c.getImageData(0, 0, env.w, env.h);
   };
 
   const setSprite = (num, val) => {
