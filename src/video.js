@@ -103,7 +103,7 @@ function video (dom, env) {
     }
     for (var j = 0; j < 8; j ++) {
       for (var i = 0; i < 8; i++) {
-        if (l[j][i]) {
+        if (l[j * 8 + i]) {
           setPixel(x + i, y + j, col);
         }
       }

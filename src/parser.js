@@ -15,7 +15,7 @@ const peg = `
       { return -parseFloat(chars.join('') + frac); }
 
   string
-    = '\\"' ch:[ a-z0-9]* '\\"' { return ch.join(''); }
+    = '\\"' ch:[ a-z0-9!#$%&\'\(\)*+,-\./]* '\\"' { return ch.join(''); }
 
   comment = init:'#' rest:char* { return init + rest.join('');}
 

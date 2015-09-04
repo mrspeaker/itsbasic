@@ -58,8 +58,12 @@ const env = {
 
       const charToBasicChar = (c) => {
         const code = c.charCodeAt(0);
-        if (code >= 48 && code <= 57) return (code - 48) + 26;
-        if (code >= 97) return code - 97;
+        if (c == '@') return 0;
+        if (['!"#$%&\'()*+,-./'].indexOf(c) > -1) {
+          return ['!"#$%&\'()*+,-./'].indexOf(c) + 65;
+        }
+        if (code >= 48 && code <= 57) return (code - 48) + 48;
+        if (code >= 97) return code - 96;
       };
 
       msg.toString().split('').forEach(c => {
