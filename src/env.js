@@ -74,6 +74,11 @@ const env = {
         }
       });
     },
+    'cls': () => {
+      [...new Array(env.charW * env.charH)].map((_, i) => {
+        env.bindings.poke(env.rom.vidMemLoc + i, ' ');
+      });
+    },
     'goto': lineNumber => {
       const line = env.program.find(l => l[0] === lineNumber);
       if (line) {

@@ -50,6 +50,7 @@ Examples
 `],
 
 ['sprites',`
+1 cls()
 5 print "sprites", 20, 0
 10 poke 1000, 1: poke 1001, 1
 20 x = 0

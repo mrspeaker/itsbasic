@@ -22,6 +22,7 @@ It's basic.
     cos, sin, tan, atan2
     mod
     con // console.log variable
+    cls() // clear screen
 
 ----
 
@@ -41,7 +42,6 @@ have types? %, $?
 
 ## next todos:
 
-cls
 change run/stop to real stop (break) and reset.
 for loop
 cursor pos should be in RAM.
