@@ -19,7 +19,7 @@ progs.forEach((p, i) => {
   const opt = document.createElement('option');
   opt.value = i;
   opt.selected = i === defaultProggy;
-  opt.innerHTML = p[0];
+  opt.textContent = p[0];
   selectProgs.appendChild(opt);
 });
 
