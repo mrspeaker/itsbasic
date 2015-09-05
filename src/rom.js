@@ -16,6 +16,7 @@ const ROM = Object.freeze({
   dataWriteLoc: 3,
   cursorPos: 4,
   pc: 5,
+  cursorOn: 6,
   dataBaseLoc: 5000
 
 });

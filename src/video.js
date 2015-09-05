@@ -10,13 +10,7 @@ function video (dom, env) {
 
     if (addr >= rom.vidMemLoc && addr < rom.vidMemLoc + 1000) {
       const charLoc = addr - rom.vidMemLoc;
-      //const dom = chars[charLoc];
-      //dom.style.backgroundColor = rom.colors[ram[rom.BACKCOL]];
-      //dom.style.color = rom.colors[ram[rom.FORECOL]];
-      //dom.textContent = rom.chars[val];
-
-
-      // TODO!!! this is sometimes 16. lol.
+      // TODO!!! this is sometimes > 15
       const backCol = palData[ram[rom.BACKCOL] % 16];
       drawGlyph(charLoc % env.charW * 8, (charLoc / env.charW | 0) * 8, backCol);
       const foreCol = palData[ram[rom.FORECOL] % 16];
@@ -26,7 +20,6 @@ function video (dom, env) {
     // Update color
     if (addr >= rom.vidColBackLoc && addr < rom.vidColBackLoc + 1000) {
       const charLoc = addr - rom.vidColBackLoc;
-      //chars[charLoc].style.backgroundColor = rom.colors[val];
       const col = palData[ram[rom.BACKCOL] % 16];
       drawGlyph(charLoc % env.charW * 8, (charLoc / env.charW | 0) * 8, col);
     }
@@ -66,11 +59,6 @@ function video (dom, env) {
   })();
 
   const screen = document.querySelector(dom);
-  /*const chars = [...new Array(env.charW * env.charH)].map(() => {
-    const d = document.createElement('div');
-    screen.appendChild(d);
-    return d;
-  });*/
 
   const can = document.createElement('canvas');
   can.width = env.w;
@@ -110,13 +98,16 @@ function video (dom, env) {
     }
   };
 
-  const update = () => {
-    c.putImageData(data, 0, 0);
-  };
+  const linearToXY = (linear) => ({x: linear % env.charW * 8, y : (linear / env.charW | 0) * 8});
 
   const loop = () => {
     requestAnimationFrame(loop);
-    update();
+
+    const blink = env.ram[env.rom.cursorOn];
+    const {x, y} = linearToXY(env.ram[env.rom.cursorPos]);
+    drawGlyph(x, y, palData[blink ? 6 : 14]);
+
+    c.putImageData(data, 0, 0);
   };
   loop();
 
@@ -142,12 +133,6 @@ function video (dom, env) {
   });
 
   const reset = () => {
-    /*chars.map(ch => {
-      ch.textContent = ' ';
-      ch.style.backgroundColor = env.rom.colors[6];
-      ch.style.color = env.rom.colors[14];
-    });*/
-
     sprites.map((s, i) => {
       setSprite(i, 0);
       moveSprite(i, true, 0);

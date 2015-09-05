@@ -25,7 +25,7 @@ img.onload = () => {
       letters.push(bits);
     }
   }
-  //document.body.appendChild(can);
+  
 };
 
 module.exports = letters;

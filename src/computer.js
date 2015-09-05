@@ -8,6 +8,8 @@ video('#screen', env);
 
 var runTimer = null;
 
+var running = false;
+
 const exec = (line, lineNumber = -1, alreadyParsed = false) => {
   var parsed, res;
 
@@ -99,22 +101,32 @@ const load = (prog) => {
 
 const run = () => {
 
-  const pc = env.rom.pc;
+  running = true;
+
+  const rom = env.rom;
+  const pc = rom.pc;
   const ram = env.ram;
 
   // Run the 'puter
   runTimer = setInterval(() => {
-    if (ram[pc] >= env.program.length) {
-      return;
-    }
 
-    // x instructions per frame
-    for (var i = 0; i < 10; i++) {
-      exec(env.parsedCode[ram[pc]], env.program[ram[pc]][0], true);
-      ram[pc]++;
+    if (running) {
       if (ram[pc] >= env.program.length) {
-        break;
+        running = false;
+        return;
       }
+
+      // x instructions per frame
+      for (var i = 0; i < 10; i++) {
+        exec(env.parsedCode[ram[pc]], env.program[ram[pc]][0], true);
+        ram[pc]++;
+        if (ram[pc] >= env.program.length) {
+          break;
+        }
+      }
+    } else {
+      // Interpreter
+      ram[rom.cursorOn] = Date.now() / 500 % 2 | 0;
     }
 
   }, 1000 / 60);

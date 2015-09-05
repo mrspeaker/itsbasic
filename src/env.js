@@ -18,6 +18,7 @@ const env = {
 
     ram[rom.pc] = 0;
     ram[rom.cursorPos] = 0;
+    ram[rom.cursorOn] = 0;
     ram[rom.BACKCOL] = 6;
     ram[rom.FORECOL] = 14;
     ram[rom.dataReadLoc] = rom.dataBaseLoc;
