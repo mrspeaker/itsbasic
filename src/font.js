@@ -25,12 +25,12 @@ img.onload = () => {
       letters.push(bits);
     }
   }
-  document.body.appendChild(can);
-}
+  //document.body.appendChild(can);
+};
 
 module.exports = letters;
 
-[
+/*[
   `
     ...XX...
     ..XXXX..
@@ -128,3 +128,4 @@ module.exports = letters;
     .map(l => l.split('').map(c => {
       return c === 'X' ? 1 : 0;
     })));
+*/
