@@ -2,6 +2,7 @@ const parse = require('./parser');
 const evals = require('./evals');
 const env = require('./env');
 const video = require('./video');
+const keys = require('./keys');
 
 // Init video
 video('#screen', env);
@@ -101,11 +102,17 @@ const load = (prog) => {
 
 const run = () => {
 
+  if (runTimer) {
+    clearInterval(runTimer);
+  }
+
   running = true;
 
   const rom = env.rom;
   const pc = rom.pc;
   const ram = env.ram;
+
+  ram[pc] = 0;
 
   // Run the 'puter
   runTimer = setInterval(() => {
@@ -125,15 +132,45 @@ const run = () => {
         }
       }
     } else {
-      // Interpreter
+      // Direct mode
+
+      // blink
       ram[rom.cursorOn] = Date.now() / 500 % 2 | 0;
+
+      const key = keys.read();
+      if (key) {
+
+        switch (key) {
+        case 38:
+          ram[rom.cursorPos] -= env.charW;
+          break;
+        case 40:
+          ram[rom.cursorPos] += env.charW;
+          break;
+        case 37:
+          ram[rom.cursorPos] -= 1;
+          break;
+        case 39:
+          ram[rom.cursorPos] += 1;
+          break;
+        default:
+          const basic = keys.codeToBasic(key);
+          env.bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], basic);
+          ram[rom.cursorPos] ++;
+        }
+      }
+
     }
 
   }, 1000 / 60);
 
 };
 
-const runstop = () => clearInterval(runTimer);
+run();
+
+const runstop = () => {
+  running = false;
+}
 
 module.exports = {
   load,
