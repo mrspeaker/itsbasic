@@ -3,12 +3,12 @@ const evals = require('./evals');
 const env = require('./env');
 const video = require('./video');
 const keys = require('./keys');
+const utils = require('./utils');
 
 // Init video
 video('#screen', env);
 
 var runTimer = null;
-
 var running = false;
 
 const exec = (line, lineNumber = -1, alreadyParsed = false) => {
@@ -99,6 +99,20 @@ const load = (prog) => {
 
 };
 
+const execTheLineYo = () => {
+  const {ram, rom} = env;
+  const ypos = ram[rom.cursorPos] / env.charW | 0;
+  const line = [...new Array(env.charW)]
+    .map((_, i) => ram[rom.vidMemLoc + (ypos * env.charW) + i])
+    .map(utils.bascii2Char)
+    .join('')
+    .toLowerCase();
+    console.log(line)
+  ram[rom.cursorPos] = (ypos + 1) * env.charW;
+  exec(line);
+
+};
+
 
 const run = () => {
 
@@ -141,6 +155,11 @@ const run = () => {
       if (key) {
 
         switch (key) {
+        case 13:
+          // return key
+          // Read the current line and exec it!
+          execTheLineYo();
+          break;
         case 38:
           ram[rom.cursorPos] -= env.charW;
           break;
@@ -156,7 +175,7 @@ const run = () => {
         default:
           const basic = keys.codeToBasic(key);
           env.bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], basic);
-          ram[rom.cursorPos] ++;
+          ram[rom.cursorPos]++;
         }
       }
 

@@ -63,8 +63,9 @@ const env = {
         if (['!"#$%&\'()*+,-./'].indexOf(c) > -1) {
           return ['!"#$%&\'()*+,-./'].indexOf(c) + 65;
         }
+        if (code === 32) return 32; // woah!
         if (code >= 48 && code <= 57) return (code - 48) + 48;
-        if (code >= 97) return code - 96;
+        if (code >= 97 && code < 123) return code - 96;
       };
 
       msg.toString().split('').forEach(c => {
@@ -106,6 +107,10 @@ const env = {
     'read': () => {
       const {ram, rom} = env;
       return ram[ram[rom.dataReadLoc]++];
+    },
+    'run': () => {
+      console.log('I don\'t even know!');
+      return 0;
     }
   }
 };

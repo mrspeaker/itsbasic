@@ -1,24 +1,15 @@
 
-const keys = {};
-const buffer = [];
-
-document.body.addEventListener('keydown', e => {
-  const which = e.which;
-  keys[which] = true;
-  if (e.location === 0) {
-    buffer.push(which);
-  }
-}, false);
-
-document.body.addEventListener('keyup', ({which}) => {
-  keys[which] = false;
-}, false);
-
-const read = () => {
-  return buffer.pop();
+const bascii2Char = bascii => {
+  if (bascii === 0) return '@';
+  if (bascii === 32) return ' ';
+  if (bascii < 26) return String.fromCharCode(64 + bascii);
+  if (bascii === 48) return '0';
+  if (bascii > 48 && bascii < 57) return (bascii - 48) + '';
+  console.log("Unknown bascii:", bascii);
+  return '';
 };
 
-const codeToBasic = (code) => {
+const keycode2Bascii = code => {
   const c = String.fromCharCode(code);
   if (c === '@') return 0;
   if (['!"#$%&\'()*+,-./'].indexOf(c) > -1) {
@@ -32,7 +23,6 @@ const codeToBasic = (code) => {
 };
 
 module.exports = {
-  read,
-  keys,
-  codeToBasic
+  bascii2Char,
+  keycode2Bascii
 };
