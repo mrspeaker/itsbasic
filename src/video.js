@@ -86,7 +86,7 @@ function video (dom, env) {
   const plot = (x, y, letter, col) => {
     const l = font[letter % font.length];
     if (!l) {
-      //console.log(letter, font)
+      // console.log(letter, font)
       return;
     }
     for (var j = 0; j < 8; j ++) {

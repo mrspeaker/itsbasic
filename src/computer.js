@@ -101,7 +101,7 @@ const load = (prog) => {
 
 const execTheLineYo = () => {
   const {ram, rom} = env;
-  const ypos = ram[rom.cursorPos] / env.charW | 0;
+  var ypos = ram[rom.cursorPos] / env.charW | 0;
   const line = [...new Array(env.charW)]
     .map((_, i) => ram[rom.vidMemLoc + (ypos * env.charW) + i])
     .map(utils.bascii2Char)
@@ -110,6 +110,8 @@ const execTheLineYo = () => {
   console.log("Exec line:", line);
   ram[rom.cursorPos] = (ypos + 1) * env.charW;
   exec(line);
+  ypos = ram[rom.cursorPos] / env.charW | 0;
+  ram[rom.cursorPos] = (ypos + 1) * env.charW;
 };
 
 const run = () => {
@@ -154,8 +156,7 @@ const run = () => {
 
         switch (key.code) {
         case 13:
-          // return key
-          // Read the current line and exec it!
+          // return key: read the current line and exec it
           execTheLineYo();
           break;
         case 8:
@@ -179,7 +180,6 @@ const run = () => {
           break;
         default:
           const basic = utils.keycode2Bascii(key);
-          console.log(basic);
           env.bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], basic);
           ram[rom.cursorPos]++;
         }
