@@ -6,7 +6,7 @@ document.body.addEventListener('keydown', e => {
   const which = e.which;
   keys[which] = true;
   if (e.location === 0) {
-    buffer.push(which);
+    buffer.push({code: which, char: e.key});
   }
 }, false);
 
@@ -14,25 +14,9 @@ document.body.addEventListener('keyup', ({which}) => {
   keys[which] = false;
 }, false);
 
-const read = () => {
-  return buffer.pop();
-};
-
-const codeToBasic = (code) => {
-  const c = String.fromCharCode(code);
-  if (c === '@') return 0;
-  if (['!"#$%&\'()*+,-./'].indexOf(c) > -1) {
-    return ['!"#$%&\'()*+,-./'].indexOf(c) + 65;
-  }
-  if (code === 32) return 32; // woah!
-  if (code >= 48 && code <= 57) return (code - 48) + 48;
-  if (code >= 65 && code < 90) return code - 64;
-  if (code >= 97 && code < 123) return code - 96;
-  return 0;
-};
+const read = () => buffer.pop();
 
 module.exports = {
   read,
-  keys,
-  codeToBasic
+  keys
 };

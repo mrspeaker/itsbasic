@@ -5,16 +5,19 @@ const bascii2Char = bascii => {
   if (bascii < 26) return String.fromCharCode(64 + bascii);
   if (bascii === 48) return '0';
   if (bascii > 48 && bascii < 57) return (bascii - 48) + '';
+  if (bascii === 34) return '"';
+  if (bascii === 44) return ',';
   console.log("Unknown bascii:", bascii);
   return '';
 };
 
-const keycode2Bascii = code => {
-  const c = String.fromCharCode(code);
+const keycode2Bascii = ({code, char}) => {
+  const c = char;//String.fromCharCode(code);
   if (c === '@') return 0;
-  if (['!"#$%&\'()*+,-./'].indexOf(c) > -1) {
-    return ['!"#$%&\'()*+,-./'].indexOf(c) + 65;
+  if ('!"#$%&\'()*+,-./'.indexOf(c) > -1) {
+    return '!"#$%&\'()*+,-./'.indexOf(c) + 33;
   }
+  if (code === 8) return 8;
   if (code === 32) return 32; // woah!
   if (code >= 48 && code <= 57) return (code - 48) + 48;
   if (code >= 65 && code < 90) return code - 64;

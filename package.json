@@ -4,13 +4,15 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "budo src/index.js:bundle.js"
+    "start": "budo src/index.js | garnish"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "babelify": "^6.2.0",
-    "budo": "^4.2.1",
     "pegjs": "^0.8.0"
+  },
+  "devDependencies": {
+    "budo": "^4.2.1",
+    "garnish": "^3.2.0"
   }
 }
