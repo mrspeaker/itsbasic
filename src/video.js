@@ -102,10 +102,18 @@ function video (dom, env) {
 
   const loop = () => {
     requestAnimationFrame(loop);
-
-    const blink = env.ram[env.rom.cursorOn];
-    const {x, y} = linearToXY(env.ram[env.rom.cursorPos]);
+    const {ram, rom} = env;
+    const blink = ram[rom.cursorOn];
+    const {x, y} = linearToXY(ram[rom.cursorPos]);
     drawGlyph(x, y, palData[blink ? 6 : 14]);
+    if (blink) {
+      const foreCol = palData[ram[rom.FORECOL] % 16];
+      const charLoc = ram[rom.cursorPos];
+      const val = ram[rom.vidMemLoc + charLoc];
+      if (val) {
+        plot(charLoc % env.charW * 8, (charLoc / env.charW | 0) * 8, val, foreCol);
+      }
+    }
 
     c.putImageData(data, 0, 0);
   };

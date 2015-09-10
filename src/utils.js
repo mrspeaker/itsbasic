@@ -17,7 +17,8 @@ const basciiSet = {
   46: '.',
   47: '/',
   48: '0', 49: '1', 50: '2', 51: '3', 52: '4', 53: '5', 54: '6', 55: '7', 56: '8', 57: '9',
-  61: '='
+  61: '=',
+  63: '?'
 };
 //[..new Array(26)].forEach((_, i) => keys[i + 1] =
 const charSet = Object.keys(basciiSet).reduce((chs, el) => {
@@ -38,20 +39,26 @@ const bascii2Char = bascii => {
   return '';
 };
 
+const char2Bascii = char => {
+  if (charSet[char] !== undefined) {
+    return charSet[char];
+  } else {
+    console.log(char, 'not in charset');
+  }
+
+  return 0;
+}
+
 const keycode2Bascii = ({code, char}) => {
   if (code === 8) return 8;
   if (code >= 65 && code < 90) return code - 64;
   if (code >= 97 && code < 123) return code - 96;
-  if (charSet[char] !== undefined) {
-    return charSet[char];
-  } else {
-    console.log(char, code, 'not in charset');
-  }
 
-  return 0;
+  return char2Bascii(char);
 };
 
 module.exports = {
   bascii2Char,
+  char2Bascii,
   keycode2Bascii
 };

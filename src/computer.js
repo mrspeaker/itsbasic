@@ -20,7 +20,8 @@ const exec = (line, lineNumber = -1, alreadyParsed = false) => {
     try {
       parsed = parse(line);
     } catch (e) {
-      env.bindings.print('syntax error in ' + lineNumber + ' col ' + e.offset);
+      const msg = lineNumber >= 0 ? '?syntax error in ' + lineNumber + ' col ' + e.offset : '?syntax error, col ' + e.offset;
+      env.bindings.print(msg);
       console.error('parse.', e.message, e);
       runstop();
       return;
@@ -31,7 +32,8 @@ const exec = (line, lineNumber = -1, alreadyParsed = false) => {
   try {
     res = evals.evalStatements(parsed, env);
   } catch (e) {
-    env.bindings.print('exec error in ' + lineNumber);
+    const msg = lineNumber >= 0 ? '?exec error in ' + lineNumber : '?error';
+    env.bindings.print(msg);
     console.error('exec.', e.message, e);
     runstop();
     return;
@@ -106,12 +108,15 @@ const execTheLineYo = () => {
     .map((_, i) => ram[rom.vidMemLoc + (ypos * env.charW) + i])
     .map(utils.bascii2Char)
     .join('')
+    .trim()
     .toLowerCase();
   console.log("Exec line:", line);
   ram[rom.cursorPos] = (ypos + 1) * env.charW;
-  exec(line);
-  ypos = ram[rom.cursorPos] / env.charW | 0;
-  ram[rom.cursorPos] = (ypos + 1) * env.charW;
+  if (line) {
+    exec(line);
+    ypos = ram[rom.cursorPos] / env.charW | 0;
+    ram[rom.cursorPos] = (ypos + 1) * env.charW;
+  }
 };
 
 const run = () => {
@@ -191,6 +196,7 @@ const run = () => {
 
 };
 
+exec('cls()');
 run();
 
 const runstop = () => {

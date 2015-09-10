@@ -1,5 +1,6 @@
 const Interupt = require('./Interupt');
 const rom = require('./ROM');
+const utils = require('./utils');
 
 const w = 320;
 const h = 200;
@@ -57,15 +58,16 @@ const env = {
         ram[rom.cursorPos] = y * env.charW + x;
       }
 
-      const charToBasicChar = (c) => {
-        const code = c.charCodeAt(0);
-        if (c == '@') return 0;
+      const charToBasicChar = char => {
+        const code = char.charCodeAt(0);
+        return utils.keycode2Bascii({code, char});
+        /*if (c == '@') return 0;
         if (['!"#$%&\'()*+,-./'].indexOf(c) > -1) {
           return ['!"#$%&\'()*+,-./'].indexOf(c) + 65;
         }
         if (code === 32) return 32; // woah!
         if (code >= 48 && code <= 57) return (code - 48) + 48;
-        if (code >= 97 && code < 123) return code - 96;
+        if (code >= 97 && code < 123) return code - 96;*/
       };
 
       msg.toString().split('').forEach(c => {
@@ -82,8 +84,9 @@ const env = {
     },
     'cls': () => {
       [...new Array(env.charW * env.charH)].map((_, i) => {
-        env.bindings.poke(env.rom.vidMemLoc + i, ' ');
+        env.bindings.poke(env.rom.vidMemLoc + i, 32);
       });
+      env.ram[env.rom.cursorPos] = 0;
     },
     'goto': lineNumber => {
       const line = env.program.find(l => l[0] === lineNumber);
