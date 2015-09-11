@@ -59,6 +59,8 @@ const exec = (line, lineNumber = -1, alreadyParsed = false) => {
   }
 };
 
+const sortProg = prog => prog.sort((a, b) => a[0] - b[0]);
+
 const load = (prog) => {
 
   runstop();
@@ -76,8 +78,70 @@ const load = (prog) => {
     .sort((a, b) => a[0] - b[0]);
     // TODO: remove if duplicates...
 
+};
+
+const execTheLineYo = () => {
+  const {ram, rom} = env;
+  var ypos = ram[rom.cursorPos] / env.charW | 0;
+  const line = [...new Array(env.charW)]
+    .map((_, i) => ram[rom.vidMemLoc + (ypos * env.charW) + i])
+    .map(utils.bascii2Char)
+    .join('')
+    .trim()
+    .toLowerCase();
+  console.log("Exec line:", line);
+  ram[rom.cursorPos] = (ypos + 1) * env.charW;
+
+  const seeIfItsAProgramLine = line.match(/^[1-9][0-9]*\s/);
+  if (seeIfItsAProgramLine) {
+    const lineNum = parseInt(seeIfItsAProgramLine[0], 10);
+    const lineCode = line.slice((seeIfItsAProgramLine[0] + '').length);
+    const newInstruction = [lineNum, lineCode];
+    // Add this line
+    var replaced = false;
+    env.program = env.program.map(line => {
+      if (line[0] === lineNum) {
+        line[1] = lineCode;
+        replaced = true;
+      }
+      return line;
+    });
+
+    if (!replaced) {
+      // NOTE: not in order (but is ordered on run.)
+      env.program.push(newInstruction);
+    }
+
+    // TODO: dodgy order.
+    env.program = sortProg(env.program);
+  } else {
+    if (line) {
+      // TODO: um, not nice.
+      if (line === "run") {
+        run();
+      } else {
+        exec(line);
+      }
+      ypos = ram[rom.cursorPos] / env.charW | 0;
+      ram[rom.cursorPos] = (ypos + 1) * env.charW;
+    }
+  }
+};
+
+const run = () => {
+
+  if (runTimer) {
+    running = false;
+    clearInterval(runTimer);
+  }
+
+  const rom = env.rom;
+  const ram = env.ram;
+  const pc = rom.pc;
+
   // Parse the entire prog
   var err = null;
+
   env.parsedCode = env.program.map(line => {
     if (err) return;
     try {
@@ -99,38 +163,7 @@ const load = (prog) => {
     env.bindings.print("ready ");
   }
 
-};
-
-const execTheLineYo = () => {
-  const {ram, rom} = env;
-  var ypos = ram[rom.cursorPos] / env.charW | 0;
-  const line = [...new Array(env.charW)]
-    .map((_, i) => ram[rom.vidMemLoc + (ypos * env.charW) + i])
-    .map(utils.bascii2Char)
-    .join('')
-    .trim()
-    .toLowerCase();
-  console.log("Exec line:", line);
-  ram[rom.cursorPos] = (ypos + 1) * env.charW;
-  if (line) {
-    exec(line);
-    ypos = ram[rom.cursorPos] / env.charW | 0;
-    ram[rom.cursorPos] = (ypos + 1) * env.charW;
-  }
-};
-
-const run = () => {
-
-  if (runTimer) {
-    clearInterval(runTimer);
-  }
-
   running = true;
-
-  const rom = env.rom;
-  const pc = rom.pc;
-  const ram = env.ram;
-
   ram[pc] = 0;
 
   // Run the 'puter
