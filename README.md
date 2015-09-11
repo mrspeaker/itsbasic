@@ -24,18 +24,21 @@ It's basic.
     con // console.log variable
     cls() // clear screen
 
+    run
+    list
+
 ----
 
 ## Problems
 
 * return from rom binding only handles last statement.
-* line numbers ignored (in init prog... need to sort/filter etc.)
+* several variable look-ups in a row crash things: "10 a a a a a"
+* cursor blink sticks when moving
 
 ---
 
 ## Thinkin'
 
-printing moves the cursor pos.
 have types? %, $?
 
 ---

@@ -81,6 +81,9 @@ const env = {
           ram[rom.cursorPos] += env.charW * env.charH;
         }
       });
+
+      const ypos = ram[rom.cursorPos] / env.charW | 0;
+      ram[rom.cursorPos] = (ypos + 1) * env.charW;
     },
     'cls': () => {
       [...new Array(env.charW * env.charH)].map((_, i) => {
@@ -114,6 +117,13 @@ const env = {
     'run': () => {
       console.log('I don\'t even know!');
       return 0;
+    },
+    'list': () => {
+      console.log("list a progyy?");
+      env.bindings.cls();
+      env.program.map(line => {
+        env.bindings.print(line[0] + ' ' + line[1]);
+      });
     }
   }
 };

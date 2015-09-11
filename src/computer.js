@@ -72,7 +72,7 @@ const load = (prog) => {
     if (!lineNum) {
       return [-1];
     }
-    return [parseInt(lineNum, 10), l.slice(lineNum.toString().length)];
+    return [parseInt(lineNum, 10), l.slice(lineNum.toString().length).trim()];
   })
     .filter(l => l[0] !== -1)
     .sort((a, b) => a[0] - b[0]);
@@ -81,6 +81,7 @@ const load = (prog) => {
 };
 
 const execTheLineYo = () => {
+
   const {ram, rom} = env;
   var ypos = ram[rom.cursorPos] / env.charW | 0;
   const line = [...new Array(env.charW)]
@@ -89,13 +90,27 @@ const execTheLineYo = () => {
     .join('')
     .trim()
     .toLowerCase();
-  console.log("Exec line:", line);
   ram[rom.cursorPos] = (ypos + 1) * env.charW;
 
-  const seeIfItsAProgramLine = line.match(/^[1-9][0-9]*\s/);
-  if (seeIfItsAProgramLine) {
-    const lineNum = parseInt(seeIfItsAProgramLine[0], 10);
-    const lineCode = line.slice((seeIfItsAProgramLine[0] + '').length);
+  if (!line) {
+    return;
+  }
+
+  // Delete, insert, or execute line.
+
+  const deleteALine = line.match(/^[1-9][0-9]*$/);
+  const isProgramLine = line.match(/^[1-9][0-9]*\s/);
+
+  if (deleteALine) {
+    const lineNum = parseInt(deleteALine, 10);
+    env.program = env.program.filter(line => {
+      return line[0] !== lineNum;
+    });
+  }
+
+  else if (isProgramLine) {
+    const lineNum = parseInt(isProgramLine[0], 10);
+    const lineCode = line.slice((isProgramLine[0] + '').length).trim();
     const newInstruction = [lineNum, lineCode];
     // Add this line
     var replaced = false;
@@ -114,17 +129,23 @@ const execTheLineYo = () => {
 
     // TODO: dodgy order.
     env.program = sortProg(env.program);
-  } else {
-    if (line) {
-      // TODO: um, not nice.
-      if (line === "run") {
-        run();
-      } else {
-        exec(line);
-      }
-      ypos = ram[rom.cursorPos] / env.charW | 0;
-      ram[rom.cursorPos] = (ypos + 1) * env.charW;
+
+  }
+
+  else {
+    // REgular old execute-a-line.
+    // TODO: um, not nice.
+    if (line === "run") {
+      run();
     }
+    else if (line === "list") {
+      env.bindings.list();
+    }
+    else {
+      exec(line);
+    }
+    ypos = ram[rom.cursorPos] / env.charW | 0;
+    //ram[rom.cursorPos] = (ypos + 1) * env.charW;
   }
 };
 
