@@ -65,6 +65,7 @@ const load = (prog) => {
 
   runstop();
   env.reset();
+  env.bindings.print("loading...");
 
   // de-line number prog
   env.program = prog.split('\n').map(l => {
@@ -77,6 +78,8 @@ const load = (prog) => {
     .filter(l => l[0] !== -1)
     .sort((a, b) => a[0] - b[0]);
     // TODO: remove if duplicates...
+
+  env.bindings.print("ready.");
 
 };
 
@@ -138,6 +141,9 @@ const execTheLineYo = () => {
     if (line === "run") {
       run();
     }
+    if (line === "cls") {
+      env.bindings.cls();
+    }
     else if (line === "list") {
       env.bindings.list();
     }
@@ -181,7 +187,7 @@ const run = () => {
     console.error('parse.', err[1].message, err[1]);
     return;
   } else {
-    env.bindings.print("ready ");
+    env.bindings.print("ready.");
   }
 
   running = true;
@@ -189,7 +195,16 @@ const run = () => {
 
   // Run the 'puter
   runTimer = setInterval(() => {
+    const key = keys.read();
+
+    // Check for runstop!
+    if (key && key.code === 27) {
+      runstop();
+      return;
+    }
+
     if (running) {
+
       if (ram[pc] >= env.program.length) {
         running = false;
         return;
@@ -208,9 +223,7 @@ const run = () => {
       // blink
       ram[rom.cursorOn] = Date.now() / 500 % 2 | 0;
 
-      const key = keys.read();
       if (key) {
-
         switch (key.code) {
         case 13:
           // return key: read the current line and exec it
@@ -252,6 +265,10 @@ exec('cls()');
 run();
 
 const runstop = () => {
+  if (running) {
+    env.bindings.print("");
+    env.bindings.print('break in ' + env.program[env.ram[env.rom.pc]][0] + '       ');
+  }
   running = false;
 };
 

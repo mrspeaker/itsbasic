@@ -126,6 +126,11 @@ function video (dom, env) {
     redrawChar(x, y);
     if (blink) {
       drawGlyph(x, y, palData[14]);
+      const val = ram[rom.vidMemLoc + cursorPos];
+      if (val) {
+        const foreCol = palData[ram[rom.vidColBackLoc + cursorPos]];
+        plot(x, y, val, foreCol);
+      }
     }
 
     const moved = lastCursorPos !== cursorPos;

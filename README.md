@@ -47,10 +47,12 @@ have types? %, $?
 
 change run/stop to real stop (break) and reset.
 for loop
-cursor pos should be in RAM.
 set sprite data
 if x < 10 then EXPR
 input (keys)
+shortcuts for pokes for sprites etc.
+ > eg, poke 2042, 1 === spron 1, 1
+ > eg, poke 2042, 0 === spron 1, 0
 
 ---
 

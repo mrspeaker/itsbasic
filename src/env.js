@@ -128,7 +128,6 @@ const env = {
       return 0;
     },
     'list': () => {
-      console.log("list a progyy?");
       env.bindings.cls();
       env.program.map(line => {
         env.bindings.print(line[0] + ' ' + line[1]);
