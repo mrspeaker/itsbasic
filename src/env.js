@@ -25,6 +25,13 @@ const env = {
     ram[rom.dataReadLoc] = rom.dataBaseLoc;
     ram[rom.dataWriteLoc] = rom.dataBaseLoc;
 
+    // Reset memory
+    [...new Array(env.charW * env.charH)].map((_, i) => {
+      ram[rom.vidMemLoc + i] = '32';
+      ram[rom.vidColBackLoc + i] = 6;
+      ram[rom.vidColForeLoc + i] = 14;
+    });
+
     Interupt.trigger('sys_reset');
 
   },

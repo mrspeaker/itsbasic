@@ -1,12 +1,13 @@
 const parse = require('./parser');
 const evals = require('./evals');
-const env = require('./env');
 const video = require('./video');
+const env = require('./env');
 const keys = require('./keys');
 const utils = require('./utils');
 
 // Init video
 video('#screen', env);
+env.reset();
 
 var runTimer = null;
 var running = false;

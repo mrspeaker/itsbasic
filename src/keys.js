@@ -3,6 +3,7 @@ const keys = {};
 const buffer = [];
 
 document.body.addEventListener('keydown', e => {
+  e.preventDefault();
   const which = e.which;
   keys[which] = true;
   if (e.location === 0) {

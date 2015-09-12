@@ -99,21 +99,42 @@ function video (dom, env) {
   };
 
   const linearToXY = (linear) => ({x: linear % env.charW * 8, y : (linear / env.charW | 0) * 8});
+  const xyToLinear = (x, y) => ((y / 8 | 0) * env.charW) + (x / 8 | 0);
+  const redrawChar = (x, y) => {
+    const {ram, rom} = env;
+    const loc = xyToLinear(x, y);
+
+    const backCol = palData[ram[rom.vidColBackLoc + loc]]; // TODO: % 16?
+    drawGlyph(x, y, backCol);
+
+    const val = ram[rom.vidMemLoc + loc];
+    if (val) {
+      const foreCol = palData[ram[rom.vidColForeLoc + loc]];
+      plot(x, y, val, foreCol);
+    }
+  };
+
+  var lastCursorPos = env.ram[env.rom.cursorPos];
 
   const loop = () => {
     requestAnimationFrame(loop);
     const {ram, rom} = env;
     const blink = ram[rom.cursorOn];
-    const {x, y} = linearToXY(ram[rom.cursorPos]);
-    drawGlyph(x, y, palData[blink ? 6 : 14]);
+    const cursorPos = ram[rom.cursorPos];
+    const {x, y} = linearToXY(cursorPos);
+
+    redrawChar(x, y);
     if (blink) {
-      const foreCol = palData[ram[rom.FORECOL] % 16];
-      const charLoc = ram[rom.cursorPos];
-      const val = ram[rom.vidMemLoc + charLoc];
-      if (val) {
-        plot(charLoc % env.charW * 8, (charLoc / env.charW | 0) * 8, val, foreCol);
-      }
+      drawGlyph(x, y, palData[14]);
     }
+
+    const moved = lastCursorPos !== cursorPos;
+    if (moved) {
+      const {x, y} = linearToXY(lastCursorPos);
+      redrawChar(x, y);
+    }
+
+    lastCursorPos = cursorPos;
 
     c.putImageData(data, 0, 0);
   };
@@ -141,6 +162,14 @@ function video (dom, env) {
   });
 
   const reset = () => {
+    const {ram, rom} = env;
+
+    /*[...new Array(env.charW * env.charH)].map((_, i) => {
+      ram[rom.vidMemLoc + i] = '32';
+      ram[rom.vidColBackLoc + i] = 6;
+      ram[rom.vidColForeLoc + i] = 14;
+    });*/
+
     sprites.map((s, i) => {
       setSprite(i, 0);
       moveSprite(i, true, 0);
@@ -160,6 +189,8 @@ function video (dom, env) {
     sprites[num].style[isX ? 'left' : 'top'] = pos + 'px';
   };
 
+
+  reset();
 }
 
 module.exports = video;
