@@ -15,7 +15,9 @@ const env = {
   charH: h / 8,
 
   reset: function () {
-    const ram = this.ram = [];
+    const ram = this.ram;
+
+    //todo: erase prog, reset all memeory?
 
     ram[rom.pc] = 0;
     ram[rom.cursorPos] = 0;

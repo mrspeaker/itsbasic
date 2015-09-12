@@ -3,8 +3,10 @@ const keys = {};
 const buffer = [];
 
 document.body.addEventListener('keydown', e => {
-  e.preventDefault();
   const which = e.which;
+  if (which === 8) {
+    e.preventDefault();
+  }
   keys[which] = true;
   if (e.location === 0) {
     // WARNING: e.key is IE9+, and different support across browser

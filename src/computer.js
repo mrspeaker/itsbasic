@@ -7,7 +7,6 @@ const utils = require('./utils');
 
 // Init video
 video('#screen', env);
-env.reset();
 
 var runTimer = null;
 var running = false;
@@ -190,7 +189,6 @@ const run = () => {
 
   // Run the 'puter
   runTimer = setInterval(() => {
-
     if (running) {
       if (ram[pc] >= env.program.length) {
         running = false;
@@ -207,7 +205,6 @@ const run = () => {
       }
     } else {
       // Direct mode
-
       // blink
       ram[rom.cursorOn] = Date.now() / 500 % 2 | 0;
 
