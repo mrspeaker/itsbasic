@@ -17,9 +17,9 @@ const peg = `
   string
     = '\\"' ch:[ a-z0-9!#$%&\'\(\)*+,-\./]* '\\"' { return ch.join(''); }
 
-  comment = init:'#' rest:char* { return init + rest.join('');}
+  comment = init:'#' rest:char* { return init + rest.join(''); }
 
-  keyword = "then"i
+  keyword = 'then'
 
   validfirstchar = [a-zA-Z_]
   validchar = [0-9a-zA-Z_]
@@ -52,7 +52,7 @@ const peg = `
 
   statements
      = ws s:statement sep ss:statements* ws
-     { return ss.reduce((ac, el) => {el.forEach(e => ac.push(e)); return ac;}, [s]); }
+     { return ss.reduce((ac, el) => { el.forEach(e => ac.push(e)); return ac; }, [s]); }
      / ws s:statement { return [s]; }
 
   expression
@@ -80,13 +80,13 @@ const peg = `
     = number
     / string
     / v:identifier "(" ws ")"
-      { return {tag:"call", name:v, args:[]}; }
+      { return { tag:"call", name:v, args:[] }; }
     / v:identifier ws "(" ws args:arglist ws ")"
-        { return {tag:"call", _:"callExprA", name:v, args:args}; }
+        { return { tag:"call", _:"callExprA", name:v, args:args }; }
     / v:identifier ws args:arglist
-      { return {tag:"call", _:"callExprB", name:v, args:args}; }
+      { return { tag:"call", _:"callExprB", name:v, args:args }; }
     / v:identifier
-      { return {tag:"ident", name:v}; }
+      { return { tag:"ident", name:v }; }
     / "(" ws expression:expression ws ")"
       { return expression; }
 

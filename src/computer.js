@@ -162,8 +162,7 @@ const run = () => {
     clearInterval(runTimer);
   }
 
-  const rom = env.rom;
-  const ram = env.ram;
+  const {rom, ram, bindings} = env;
   const pc = rom.pc;
 
   // Parse the entire prog
@@ -183,11 +182,11 @@ const run = () => {
   // TODO: load DATA statments?
 
   if (err) {
-    env.bindings.print(err[0]);
+    bindings.print(err[0]);
     console.error('parse.', err[1].message, err[1]);
     return;
   } else {
-    env.bindings.print("ready.");
+    bindings.print("ready.");
   }
 
   running = true;
@@ -218,7 +217,9 @@ const run = () => {
           break;
         }
       }
+
     } else {
+
       // Direct mode
       // blink
       ram[rom.cursorOn] = Date.now() / 500 % 2 | 0;
@@ -231,9 +232,10 @@ const run = () => {
           break;
         case 8:
           // Delete key
-          env.bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], 32);
+          bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], 32);
           if (ram[rom.cursorPos] > 0) {
             ram[rom.cursorPos] -= 1;
+            bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], 32);
           }
           break;
         case 38:
@@ -250,8 +252,9 @@ const run = () => {
           break;
         default:
           const basic = utils.keycode2Bascii(key);
-          env.bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], basic);
+          bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], basic);
           ram[rom.cursorPos]++;
+
         }
       }
 

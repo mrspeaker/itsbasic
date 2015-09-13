@@ -132,6 +132,9 @@ const env = {
       env.program.map(line => {
         env.bindings.print(line[0] + ' ' + line[1]);
       });
+    },
+    'input': () => {
+      
     }
   }
 };

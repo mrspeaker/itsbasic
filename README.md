@@ -26,6 +26,7 @@ It's basic.
 
     run
     list
+    cls
 
 ----
 
@@ -45,14 +46,14 @@ have types? %, $?
 
 ## next todos:
 
-change run/stop to real stop (break) and reset.
-for loop
-set sprite data
-if x < 10 then EXPR
-input (keys)
-shortcuts for pokes for sprites etc.
- > eg, poke 2042, 1 === spron 1, 1
- > eg, poke 2042, 0 === spron 1, 0
+* for loop
+* set sprite data
+* if x < 10 then EXPR
+* input (keys)
+* shortcuts for pokes for sprites etc.
+  - eg, poke 2042, 1 === spron 1, 1
+  - eg, poke 2042, 0 === spron 1, 0
+* scrolling
 
 ---
 
