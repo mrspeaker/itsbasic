@@ -1,11 +1,9 @@
-const Interupt = require('./Interupt');
 const font = require('./font');
 
 function video (dom, env) {
 
   // TODO: don't handle all pokes, just send vid instructions.
-  Interupt.latch('poke', ([addr, val]) => {
-
+  env.interupt.latch('poke', ([addr, val]) => {
     const {ram, rom} = env;
 
     if (addr >= rom.vidMemLoc && addr < rom.vidMemLoc + 1000) {
@@ -40,7 +38,7 @@ function video (dom, env) {
     }
   });
 
-  Interupt.latch('sys_reset', () => reset());
+  env.interupt.latch('sys_reset', () => reset());
 
   const palData = (() => {
     const palCan = document.createElement('canvas');
@@ -167,8 +165,6 @@ function video (dom, env) {
   });
 
   const reset = () => {
-    const {ram, rom} = env;
-
     /*[...new Array(env.charW * env.charH)].map((_, i) => {
       ram[rom.vidMemLoc + i] = '32';
       ram[rom.vidColBackLoc + i] = 6;

@@ -1,26 +1,29 @@
-
-const keys = {};
-const buffer = [];
-
-document.body.addEventListener('keydown', e => {
-  const which = e.which;
-  if (which === 8) {
-    e.preventDefault();
+class Keys {
+  constructor () {
+    this.keys = {};
+    this.buffer = [];
   }
-  keys[which] = true;
-  if (e.location === 0) {
-    // WARNING: e.key is IE9+, and different support across browser
-    buffer.push({code: which, char: e.key});
+
+  read () {
+    return this.buffer.pop();
   }
-}, false);
 
-document.body.addEventListener('keyup', ({which}) => {
-  keys[which] = false;
-}, false);
+  down (e) {
+    const which = e.which;
+    if (which === 8) {
+      e.preventDefault();
+    }
+    this.keys[which] = true;
+    if (e.location === 0) {
+      // WARNING: e.key is IE9+, and different support across browser
+      this.buffer.push({code: which, char: e.key});
+    }
+  }
 
-const read = () => buffer.pop();
+  up ({which}) {
+    this.keys[which] = false;
+  }
 
-module.exports = {
-  read,
-  keys
-};
+}
+
+module.exports = Keys;
