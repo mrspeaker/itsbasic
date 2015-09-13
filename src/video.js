@@ -58,6 +58,9 @@ function video (dom, env) {
 
   const screen = document.querySelector(dom);
 
+  screen.style.position = 'relative';
+  screen.style.overflow = 'hidden';
+
   const can = document.createElement('canvas');
   can.width = env.w;
   can.height = env.h;

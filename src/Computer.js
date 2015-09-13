@@ -5,15 +5,18 @@ const Env = require('./env');
 const Keys = require('./Keys');
 const utils = require('./utils');
 
-var runTimer = null;
-var running = false;
 const sortProg = prog => prog.sort((a, b) => a[0] - b[0]);
 
 class Computer {
 
   constructor (videoSel) {
 
+    this.runTimer = null;
+    this.running = false;
+
+
     this.env = Env();
+    this.env.name = videoSel;
     this.keys = new Keys();
 
     // Init video
@@ -169,9 +172,9 @@ class Computer {
 
   run () {
     const env = this.env;
-    if (runTimer) {
-      running = false;
-      clearInterval(runTimer);
+    if (this.runTimer) {
+      this.running = false;
+      clearInterval(this.runTimer);
     }
 
     const {rom, ram, bindings} = env;
@@ -201,11 +204,12 @@ class Computer {
       bindings.print("ready.");
     }
 
-    running = true;
+    this.running = true;
     ram[pc] = 0;
 
     // Run the 'puter
-    runTimer = setInterval(() => {
+    this.runTimer = setInterval(() => {
+
       const key = this.keys.read();
 
       // Check for runstop!
@@ -214,10 +218,10 @@ class Computer {
         return;
       }
 
-      if (running) {
+      if (this.running) {
 
         if (ram[pc] >= env.program.length) {
-          running = false;
+          this.running = false;
           return;
         }
 
@@ -278,11 +282,11 @@ class Computer {
 
   runstop () {
     const env = this.env;
-    if (running) {
+    if (this.running) {
       env.bindings.print("");
       env.bindings.print('break in ' + env.program[env.ram[env.rom.pc]][0] + '       ');
     }
-    running = false;
+    this.running = false;
   }
 
 }
