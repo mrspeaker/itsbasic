@@ -6,13 +6,10 @@ const defaultProggy = 4;
 
 const computer = new Computer('#screen');
 const computer2 = new Computer('#screen2');
-
 var selected = computer;
+
 $$('#screen').addEventListener('click', () => selected = computer, false);
 $$('#screen2').addEventListener('click', () => selected = computer2, false);
-/*const s2 = document.querySelector('#screen2 canvas');
-s2.style.width = '160px';
-s2.style.height = '100px';*/
 
 $$('#load').addEventListener('click', () => selected.load($$('#prog').value), false);
 $$('#run').addEventListener('click', selected.run, false);

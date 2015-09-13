@@ -14,19 +14,21 @@ class Computer {
     this.runTimer = null;
     this.running = false;
 
-
     this.env = Env();
-    this.env.name = videoSel;
     this.keys = new Keys();
 
-    // Init video
-    video(videoSel, this.env);
+    if (videoSel) {
+      // Hookup the display
+      video(videoSel, this.env);
+    }
 
     this.exec('cls()');
+    this.tick();
     this.run();
+
   }
 
-  exec (line, lineNumber = -1, alreadyParsed = false)  {
+  execInstructionLine (line, lineNumber = -1, alreadyParsed = false)  {
     const env = this.env;
     var parsed, res;
 
@@ -75,7 +77,7 @@ class Computer {
     }
   }
 
-  execDirect () {
+  execDirectModeLine () {
     const env = this.env;
     const {ram, rom} = env;
     var ypos = ram[rom.cursorPos] / env.charW | 0;
@@ -92,7 +94,6 @@ class Computer {
     }
 
     // Delete, insert, or execute line.
-
     const deleteALine = line.match(/^[1-9][0-9]*$/);
     const isProgramLine = line.match(/^[1-9][0-9]*\s/);
 
@@ -140,7 +141,7 @@ class Computer {
         env.bindings.list();
       }
       else {
-        this.exec(line);
+        this.execInstructionLine(line);
       }
       ypos = ram[rom.cursorPos] / env.charW | 0;
       //ram[rom.cursorPos] = (ypos + 1) * env.charW;
@@ -148,14 +149,97 @@ class Computer {
 
   }
 
+  tick () {
+
+    setTimeout(() => {
+      const key = this.keys.read();
+
+      // Check for runstop!
+      if (key && key.code === 27) {
+        this.runstop();
+        return;
+      }
+
+      if (this.running) {
+        this.programMode(key);
+      } else {
+        this.directMode(key);
+      }
+
+      this.tick();
+    }, 1000 / 60);
+  }
+
+  programMode (key) {
+    const {ram, rom, program, parsedCode} = this.env;
+    const pc = rom.pc;
+
+    if (ram[pc] >= program.length) {
+      this.running = false;
+      return;
+    }
+
+    // x instructions per frame
+    for (var i = 0; i < 10; i++) {
+      this.execInstructionLine(parsedCode[ram[pc]], program[ram[pc]][0], true);
+      ram[pc]++;
+      if (ram[pc] >= program.length) {
+        break;
+      }
+    }
+
+  }
+
+  directMode (key) {
+    const {ram, rom, bindings, charW} = this.env;
+    // Direct mode
+    // blink
+    ram[rom.cursorOn] = Date.now() / 500 % 2 | 0;
+
+    if (key) {
+      switch (key.code) {
+      case 13:
+        // return key: read the current line and exec it
+        this.execDirectModeLine();
+        break;
+      case 8:
+        // Delete key
+        bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], 32);
+        if (ram[rom.cursorPos] > 0) {
+          ram[rom.cursorPos] -= 1;
+          bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], 32);
+        }
+        break;
+      case 38:
+        ram[rom.cursorPos] -= charW;
+        break;
+      case 40:
+        ram[rom.cursorPos] += charW;
+        break;
+      case 37:
+        ram[rom.cursorPos] -= 1;
+        break;
+      case 39:
+        ram[rom.cursorPos] += 1;
+        break;
+      default:
+        const basic = utils.keycode2Bascii(key);
+        bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], basic);
+        ram[rom.cursorPos]++;
+
+      }
+    }
+  }
+
   load (prog) {
-    const env = this.env;
+    const {reset, bindings} = this.env;
+
     this.runstop();
-    env.reset();
-    env.bindings.print("loading...");
+    reset();
+    bindings.print("loading...");
 
     // de-line number prog
-    env.program = prog.split('\n').map(l => {
+    this.env.program = prog.split('\n').map(l => {
       const lineNum = parseInt(l.match(/[0-9]*[\s]+/), 10);
       if (!lineNum) {
         return [-1];
@@ -166,24 +250,18 @@ class Computer {
       .sort((a, b) => a[0] - b[0]);
       // TODO: remove if duplicates...
 
-    env.bindings.print("ready.");
+    bindings.print("ready.");
 
   }
 
   run () {
-    const env = this.env;
-    if (this.runTimer) {
-      this.running = false;
-      clearInterval(this.runTimer);
-    }
-
-    const {rom, ram, bindings} = env;
+    const {rom, ram, bindings, program} = this.env;
     const pc = rom.pc;
 
     // Parse the entire prog
     var err = null;
 
-    env.parsedCode = env.program.map(line => {
+    this.env.parsedCode = program.map(line => {
       if (err) return;
       try {
         const parsed = parse(line[1]);
@@ -206,78 +284,6 @@ class Computer {
 
     this.running = true;
     ram[pc] = 0;
-
-    // Run the 'puter
-    this.runTimer = setInterval(() => {
-
-      const key = this.keys.read();
-
-      // Check for runstop!
-      if (key && key.code === 27) {
-        this.runstop();
-        return;
-      }
-
-      if (this.running) {
-
-        if (ram[pc] >= env.program.length) {
-          this.running = false;
-          return;
-        }
-
-        // x instructions per frame
-        for (var i = 0; i < 10; i++) {
-          this.exec(env.parsedCode[ram[pc]], env.program[ram[pc]][0], true);
-          ram[pc]++;
-          if (ram[pc] >= env.program.length) {
-            break;
-          }
-        }
-
-      } else {
-
-        // Direct mode
-        // blink
-        ram[rom.cursorOn] = Date.now() / 500 % 2 | 0;
-
-        if (key) {
-          switch (key.code) {
-          case 13:
-            // return key: read the current line and exec it
-            this.execDirect();
-            break;
-          case 8:
-            // Delete key
-            bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], 32);
-            if (ram[rom.cursorPos] > 0) {
-              ram[rom.cursorPos] -= 1;
-              bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], 32);
-            }
-            break;
-          case 38:
-            ram[rom.cursorPos] -= env.charW;
-            break;
-          case 40:
-            ram[rom.cursorPos] += env.charW;
-            break;
-          case 37:
-            ram[rom.cursorPos] -= 1;
-            break;
-          case 39:
-            ram[rom.cursorPos] += 1;
-            break;
-          default:
-            const basic = utils.keycode2Bascii(key);
-            bindings.poke(rom.vidMemLoc + ram[rom.cursorPos], basic);
-            ram[rom.cursorPos]++;
-
-          }
-        }
-
-      }
-
-    }, 1000 / 60);
-
   }
 
   runstop () {
