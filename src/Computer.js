@@ -11,10 +11,10 @@ class Computer {
 
   constructor (videoSel) {
 
-    this.runTimer = null;
     this.running = false;
 
     this.env = Env();
+    this.env.name = videoSel;
     this.keys = new Keys();
 
     if (videoSel) {
@@ -22,9 +22,10 @@ class Computer {
       video(videoSel, this.env);
     }
 
-    this.exec('cls()');
+    this.execInstructionLine('cls()');
     this.tick();
     this.run();
+
 
   }
 
@@ -171,6 +172,7 @@ class Computer {
   }
 
   programMode (key) {
+
     const {ram, rom, program, parsedCode} = this.env;
     const pc = rom.pc;
 
@@ -232,10 +234,9 @@ class Computer {
   }
 
   load (prog) {
-    const {reset, bindings} = this.env;
-
+    const {bindings} = this.env;
     this.runstop();
-    reset();
+    this.env.reset();
     bindings.print("loading...");
 
     // de-line number prog
@@ -251,12 +252,11 @@ class Computer {
       // TODO: remove if duplicates...
 
     bindings.print("ready.");
-
   }
 
   run () {
     const {rom, ram, bindings, program} = this.env;
-    const pc = rom.pc;
+    const {pc} = rom;
 
     // Parse the entire prog
     var err = null;

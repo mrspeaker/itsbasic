@@ -18,9 +18,12 @@ function Env () {
     charW: w / 8,
     charH: h / 8,
 
-    reset: function () {
+    rom,
+    ram: [],
+    program: [],
+
+    reset () {
       this.interupt = interupt;
-      
       const ram = this.ram;
 
       //todo: erase prog, reset all memeory?
@@ -43,10 +46,6 @@ function Env () {
       this.interupt.trigger('sys_reset');
 
     },
-
-    rom,
-    ram: [],
-    program: [],
 
     outer:{},
     bindings: {

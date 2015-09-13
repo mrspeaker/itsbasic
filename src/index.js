@@ -12,8 +12,8 @@ $$('#screen').addEventListener('click', () => selected = computer, false);
 $$('#screen2').addEventListener('click', () => selected = computer2, false);
 
 $$('#load').addEventListener('click', () => selected.load($$('#prog').value), false);
-$$('#run').addEventListener('click', selected.run, false);
-$$('#stop').addEventListener('click', selected.runstop, false);
+$$('#run').addEventListener('click', () => selected.run(), false);
+$$('#stop').addEventListener('click', () => selected.runstop(), false);
 
 document.body.addEventListener('keydown', e => selected.keys.down(e), false);
 document.body.addEventListener('keyup', e => selected.keys.up(e), false);
