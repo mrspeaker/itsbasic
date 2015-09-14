@@ -25,8 +25,6 @@ class Computer {
     this.execInstructionLine('cls()');
     this.tick();
     this.run();
-
-
   }
 
   execInstructionLine (line, lineNumber = -1, alreadyParsed = false)  {

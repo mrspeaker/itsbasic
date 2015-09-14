@@ -1,5 +1,4 @@
 const font = require('./font');
-
 function video (dom, env) {
 
   // TODO: don't handle all pokes, just send vid instructions.

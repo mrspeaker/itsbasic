@@ -46,6 +46,7 @@ have types? %, $?
 
 ## next todos:
 
+* runstop/restore (double escape?)
 * for loop
 * set sprite data
 * if x < 10 then EXPR
