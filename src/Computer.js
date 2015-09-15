@@ -156,13 +156,13 @@ class Computer {
       // Check for runstop!
       if (key && key.code === 27) {
         this.runstop();
-        return;
-      }
-
-      if (this.running) {
-        this.programMode(key);
       } else {
-        this.directMode(key);
+        if (this.running) {
+          this.programMode(key);
+        } else {
+          this.directMode(key);
+        }
+
       }
 
       this.tick();
