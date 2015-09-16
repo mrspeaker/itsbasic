@@ -35,7 +35,6 @@ It's basic.
 * move more towards QBasic drawing... better for the game.
 * return from rom binding only handles last statement.
 * several variable look-ups in a row crash things: "10 a a a a a"
-* cursor blink sticks when moving
 
 ---
 
@@ -47,12 +46,15 @@ have types? %, $?
 
 ## next todos:
 
+* write tests for parse
+* write tests for eval
 * runstop/restore (double escape?)
+
 * for loop
 * set sprite data
 * if x < 10 then EXPR
 * input (keys)
-* shortcuts for pokes for sprites etc.
+* shortcuts for pokes for sprites etc. // Eh, just do QBasic!
   - eg, poke 2042, 1 === spron 1, 1
   - eg, poke 2042, 0 === spron 1, 0
 * scrolling
@@ -76,46 +78,44 @@ have types? %, $?
 
 # Notes
 
-one font.
+    * some ascii symbols? standard ascii.
 
-some ascii symbols? standard ascii.
+    cols: 0-15
+    screen memory: char Wx char H x ascii size. peek to get value
+    color memory: charW x charH x cols. peek to get value
+    gfx memory: WxHxcols
+    program data:
+    vars:a-z
+    types: number, string, array, function
 
-cols: 0-15
-screen memory: char Wx char H x ascii size. peek to get value
-color memory: charW x charH x cols. peek to get value
-gfx memory: WxHxcols
-program data:
-vars:a-z
-types: number, string, array, function
+    numSprites
 
-numSprites
+    sprite enable bit: numSprites
+    sprite color: numSprites, cols
+    sprite data pointer: hmmm.
+    sprite pos x:
+    sprite pos y:
+    sprite scale:
+    sprite rotate?
+    sprite collisions
 
-sprite enable bit: numSprites
-sprite color: numSprites, cols
-sprite data pointer: hmmm.
-sprite pos x:
-sprite pos y:
-sprite scale:
-sprite rotate?
-sprite collisions
+    poke, peek
+    read, data, restore
+    time, date
+    cls
+    for, next, if then else
+    not or and xor
+    math funcs... / + - * = < > sin cos atan2
+    exp, mod
+    input
+    rect? circle? line? yeah!
+    gosub?
+    list, rnd,
+    save, load
+    stop
 
-poke, peek
-read, data, restore
-time, date
-cls
-for, next, if then else
-not or and xor
-math funcs... / + - * = < > sin cos atan2
-exp, mod
-input
-rect? circle? line? yeah!
-gosub?
-list, rnd,
-save, load
-stop
-
-prog:
-curLine: 0
-lines: []
-stack: []
-env: {}
+    prog:
+    curLine: 0
+    lines: []
+    stack: []
+    env: {}
