@@ -1,15 +1,14 @@
-const CRT = require('./CRT/');
-const Computer = require('./Computer/');
+const {Computer, CRT} = require('./');
 const progs = require('../list/prg');
 
 const $$ = (sel) => document.querySelector(sel);
 const defaultProggy = 4;
 
 const computer = new Computer();
-const crt1 = CRT(computer.env);
+const crt1 = CRT(computer);
 document.querySelector('#screen').appendChild(crt1);
 const computer2 = new Computer();
-CRT('#screen2', computer2.env);
+CRT('#screen2', computer2);
 
 var selected = computer;
 

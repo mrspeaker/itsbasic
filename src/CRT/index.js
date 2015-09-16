@@ -1,10 +1,11 @@
 const font = require('./font');
 
-function CRT (dom, env) {
-  if (!env) {
-    env = dom;
+function CRT (dom, computer) {
+  if (!computer) {
+    computer = dom;
     dom = null;
   }
+  const {env} = computer;
 
   // TODO: don't handle all pokes, just send vid instructions.
   env.interupt.latch('poke', ([addr, val]) => {
