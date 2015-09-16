@@ -1,10 +1,10 @@
 {
-  "name": "computer",
+  "name": "ITSBasic",
   "version": "1.0.0",
   "description": "",
-  "main": "src/Computer.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "budo src/index.js:bundle.js | garnish"
+    "start": "budo src/test.js:bundle.js | garnish"
   },
   "author": "",
   "license": "ISC",
@@ -12,7 +12,6 @@
     "pegjs": "^0.8.0"
   },
   "devDependencies": {
-    "crt": "file:../crt/",
     "budo": "^4.2.1",
     "garnish": "^3.2.0"
   }
