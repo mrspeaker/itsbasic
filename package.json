@@ -12,6 +12,7 @@
     "pegjs": "^0.8.0"
   },
   "devDependencies": {
+    "crt": "file:../crt/",
     "budo": "^4.2.1",
     "garnish": "^3.2.0"
   }

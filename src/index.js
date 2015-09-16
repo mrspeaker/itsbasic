@@ -1,12 +1,18 @@
+const CRT = require('CRT');
 const Computer = require('./Computer');
 const progs = require('../list/prg');
 
 const $$ = (sel) => document.querySelector(sel);
 const defaultProggy = 4;
 
-const computer = new Computer('#screen');
-const computer2 = new Computer('#screen2');
+const computer = new Computer();
+const crt1 = CRT(computer.env);
+document.querySelector('#screen').appendChild(crt1);
+const computer2 = new Computer();
+CRT('#screen2', computer2.env);
+
 var selected = computer;
+//console.log(CRT);
 
 $$('#screen').addEventListener('click', () => selected = computer, false);
 $$('#screen2').addEventListener('click', () => selected = computer2, false);

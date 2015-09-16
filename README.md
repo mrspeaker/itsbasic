@@ -32,6 +32,7 @@ It's basic.
 
 ## Problems
 
+* move more towards QBasic drawing... better for the game.
 * return from rom binding only handles last statement.
 * several variable look-ups in a row crash things: "10 a a a a a"
 * cursor blink sticks when moving

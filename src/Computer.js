@@ -1,6 +1,5 @@
 const parse = require('./parser');
 const evals = require('./evals');
-const video = require('./video');
 const Env = require('./env');
 const Keys = require('./Keys');
 const utils = require('./utils');
@@ -162,7 +161,6 @@ class Computer {
         } else {
           this.directMode(key);
         }
-
       }
 
       this.tick();
