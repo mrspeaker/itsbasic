@@ -32,20 +32,22 @@ It's basic.
 
 ## Problems
 
-* move more towards QBasic drawing... better for the game.
 * return from rom binding only handles last statement.
 * several variable look-ups in a row crash things: "10 a a a a a"
+* 10 goto 10 locks up browser.  
 
 ---
 
 ## Thinkin'
 
+* move more towards QBasic drawing... better for the game.
 have types? %, $?
 
 ---
 
 ## next todos:
 
+* can't have ? in strings.
 * write tests for parse
 * write tests for eval
 * runstop/restore (double escape?)

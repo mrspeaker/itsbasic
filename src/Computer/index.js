@@ -3,6 +3,7 @@ const evals = require('./evals');
 const Env = require('./env');
 const Keys = require('./Keys');
 const utils = require('./utils');
+const listings = require('../../list/prg');
 
 const sortProg = prog => prog.sort((a, b) => a[0] - b[0]);
 
@@ -38,7 +39,7 @@ class Computer {
       } catch (e) {
         const msg = lineNumber >= 0 ? '?syntax error in ' + lineNumber + ' col ' + e.offset : '?syntax error, col ' + e.offset;
         env.bindings.print(msg);
-        console.error('parse.', e.message, e);
+        //console.error('parse.', e.message, e);
         this.runstop();
         return;
       }
@@ -50,7 +51,7 @@ class Computer {
     } catch (e) {
       const msg = lineNumber >= 0 ? '?exec error in ' + lineNumber : '?error';
       env.bindings.print(msg);
-      console.error('exec.', e.message, e);
+      //console.error('exec.', e.message, e);
       this.runstop();
       return;
     }
@@ -67,10 +68,28 @@ class Computer {
         if (res.went) {
           ram[pc]--;
         }
+        if (res.diskOp) {
+          if (res.fileName === "$") {
+            env.bindings.print("----------------");
+            listings.map(l => env.bindings.print(l[0]));
+            env.bindings.print("----------------");
+            env.bindings.print("");
+            env.bindings.print("ready.");
+            return;
+          }
+          const file = listings.find(p => p[0] === res.fileName);
+          if (file) {
+            this.load (file[1]);
+          } else {
+            env.bindings.print('?File not found.');
+          }
+        }
+        if (res.input) {
+          this.execInstructionLine(`${res.variable}="${res.input}"`);
+        }
       } catch (e) {
         env.bindings.print(e.message.toLowerCase() + ' in ' + lineNumber);
-        console.error('res.', e.message, e);
-        return;
+        //console.error('res.', e.message, e);
       }
     }
   }

@@ -131,9 +131,13 @@ function Env () {
           env.bindings.print(line[0] + ' ' + line[1]);
         });
       },
-      'input': () => {
-
-      }
+      'input': v => {
+        return {
+          input: window.prompt("?"),
+          variable: v
+        };
+      },
+      'load': name => ({diskOp: "load", fileName: name})
     }
   };
 
