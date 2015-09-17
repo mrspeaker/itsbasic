@@ -2,6 +2,8 @@
 
 It's basic.
 
+![co6ap4vweam4dmx](https://cloud.githubusercontent.com/assets/129330/9934191/bf63ba48-5d1d-11e5-9f0f-9b36b2d3e987.png)
+
 ##  Implemented:
 
     \# TEXT // comment
@@ -27,6 +29,8 @@ It's basic.
     run
     list
     cls
+    load // load "$" for listing
+    save // loast on refresh!
 
 ----
 
