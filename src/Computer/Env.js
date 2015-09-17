@@ -133,11 +133,30 @@ function Env () {
       },
       'input': v => {
         return {
-          input: window.prompt("?"),
+          input: true,
           variable: v
         };
       },
-      'load': name => ({diskOp: "load", fileName: name})
+      'load': name => ({diskOp: "load", fileName: name}),
+      'save': name => ({diskOp: "save", fileName: name}),
+      'set': (id, attr, value) => {
+        // Fire global event.
+        if (window.worldBus) {
+          window.worldBus.fire({
+            type: 'set',
+            id,
+            attr,
+            value
+          });
+        }
+      },
+      'get': (id, attr) => {
+        // will have to ask the world directly from here.
+        if (!window.worldBus) {
+          return 0;
+        }
+        return window.worldBus.get(id, attr);
+      }
     }
   };
 

@@ -32,6 +32,8 @@ It's basic.
 
 ## Problems
 
+* can't have a line longer than 1 screen (no wrapping)
+* need an insert key
 * return from rom binding only handles last statement.
 * several variable look-ups in a row crash things: "10 a a a a a"
 * 10 goto 10 locks up browser.  

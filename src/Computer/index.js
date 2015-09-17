@@ -17,11 +17,6 @@ class Computer {
     this.env.name = videoSel;
     this.keys = new Keys();
 
-    if (videoSel) {
-      // Hookup the display
-      video(videoSel, this.env);
-    }
-
     this.execInstructionLine('cls()');
     this.tick();
     this.run();
@@ -69,23 +64,32 @@ class Computer {
           ram[pc]--;
         }
         if (res.diskOp) {
-          if (res.fileName === "$") {
-            env.bindings.print("----------------");
-            listings.map(l => env.bindings.print(l[0]));
-            env.bindings.print("----------------");
-            env.bindings.print("");
-            env.bindings.print("ready.");
-            return;
+          if (res.diskOp === "load") {
+            if (res.fileName === "$") {
+              env.bindings.print("----------------");
+              listings.map(l => env.bindings.print(l[0]));
+              env.bindings.print("----------------");
+              env.bindings.print("");
+              env.bindings.print("ready.");
+              return;
+            }
+            const file = listings.find(p => p[0] === res.fileName);
+            if (file) {
+              this.load (file[1]);
+            } else {
+              env.bindings.print('?File not found.');
+            }
           }
-          const file = listings.find(p => p[0] === res.fileName);
-          if (file) {
-            this.load (file[1]);
-          } else {
-            env.bindings.print('?File not found.');
+          if (res.diskOp === "save") {
+            listings.push([
+              res.fileName,
+              this.env.program.map(l => l[0] + ' ' + l[1]).join('\n')
+            ]);
           }
         }
         if (res.input) {
-          this.execInstructionLine(`${res.variable}="${res.input}"`);
+          const val = window.prompt("?");
+          this.execInstructionLine(`${res.variable}="${val}"`);
         }
       } catch (e) {
         env.bindings.print(e.message.toLowerCase() + ' in ' + lineNumber);
