@@ -32,6 +32,10 @@ It's basic.
     load // load "$" for listing
     save // loast on refresh!
 
+    // Extrernal refs: only works in current game room.
+    get // interact with world: get(<ITEMID>, "<ATTR>")
+    get // interact with world: get(<ITEMID>, "<ATTR>", <VALUE>)
+
 ----
 
 ## Problems

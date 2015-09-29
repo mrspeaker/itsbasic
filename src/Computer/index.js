@@ -197,6 +197,11 @@ class Computer {
 
     if (ram[pc] >= program.length) {
       this.running = false;
+      window.worldBus && window.worldBus.fire({
+        type: 'programEnded',
+        len: program.length,
+        // Might send run time, or something...
+      });
       return;
     }
 
@@ -310,6 +315,11 @@ class Computer {
     if (this.running) {
       env.bindings.print("");
       env.bindings.print('break in ' + env.program[env.ram[env.rom.pc]][0] + '       ');
+      window.worldBus && window.worldBus.fire({
+        type: 'programEnded',
+        len: env.program.length,
+        // Might send run time, or something...
+      });
     }
     this.running = false;
   }

@@ -58,5 +58,20 @@ Examples
 35 poke 1022, sin(x / 100) * 60 + 130
 40 x = x + 1
 80 goto 30
+`],
+
+['spin',`
+5 print "rad!", 20, 0: a=0
+10 set(1, "rotx", a)
+20 a=a+0.01
+30 goto 10
+`],
+
+['disco',`
+10 a=0
+20 if (mod(a, 100)<>1) then 40
+30 set(16, "toggle")
+40 a=a+1
+50 goto 20
 `]
 ];
