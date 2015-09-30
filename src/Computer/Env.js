@@ -140,22 +140,18 @@ function Env () {
       'load': name => ({diskOp: "load", fileName: name}),
       'save': name => ({diskOp: "save", fileName: name}),
       'set': (id, attr, value) => {
-        // Fire global event.
-        if (window.worldBus) {
-          window.worldBus.fire({
-            type: 'set',
-            id,
-            attr,
-            value
-          });
+        // shoudl be:? ({serialOp: "set", op: {id, attr, value}})
+        if (env.serialBus) {
+          env.serialBus.emit({type:"set", id, attr, value});
         }
       },
       'get': (id, attr) => {
         // will have to ask the world directly from here.
-        if (!window.worldBus) {
+        // Needs to be blocking.
+        if (!env.serialBus) {
           return 0;
         }
-        return window.worldBus.get(id, attr);
+        return env.serialBus.get(id, attr);
       }
     }
   };

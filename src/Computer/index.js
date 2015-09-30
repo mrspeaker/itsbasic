@@ -9,12 +9,19 @@ const sortProg = prog => prog.sort((a, b) => a[0] - b[0]);
 
 class Computer {
 
-  constructor (videoSel) {
+  constructor (videoSel, serialBus) {
+
+    /*
+      Note: serialBus needs:
+        * on (eventEmitter listener)
+        * emit (eventEmitter trigger)
+        * get (blocking operation - returns something in the real world)
+    */
 
     this.running = false;
-
     this.env = Env();
     this.env.name = videoSel;
+    this.env.serialBus = serialBus;
     this.keys = new Keys();
 
     this.execInstructionLine('cls()');
@@ -197,7 +204,7 @@ class Computer {
 
     if (ram[pc] >= program.length) {
       this.running = false;
-      window.worldBus && window.worldBus.fire({
+      this.env.serialBus && this.env.serialBus.emit({
         type: 'programEnded',
         len: program.length,
         // Might send run time, or something...
@@ -315,7 +322,7 @@ class Computer {
     if (this.running) {
       env.bindings.print("");
       env.bindings.print('break in ' + env.program[env.ram[env.rom.pc]][0] + '       ');
-      window.worldBus && window.worldBus.fire({
+      env.serialBus && env.serialBus.emit({
         type: 'programEnded',
         len: env.program.length,
         // Might send run time, or something...
