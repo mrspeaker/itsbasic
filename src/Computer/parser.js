@@ -3,21 +3,22 @@ const peg = `
   start
     = ws seq:statements { return seq; }
 
-  char = [ a-zA-Z0-9\\?\\!]
+  // char = [ a-zA-Z0-9\\?\\!]
+  char = [ a-zA-Z0-9!#$%&\'\(\)*+,-\.=:/]
 
   number_frac
-    = '.' chars:[0-9]* { return '.' + chars.join(''); }
+    = '.' digs:[0-9]* { return '.' + digs.join(''); }
 
   number
-    = chars:[0-9]+ frac:number_frac?
-      { return parseFloat(chars.join('') + frac); }
-    / '-' chars:[0-9]+ frac:number_frac?
-      { return -parseFloat(chars.join('') + frac); }
+    = digs:[0-9]+ frac:number_frac?
+      { return parseFloat(digs.join('') + frac); }
+    / '-' digs:[0-9]+ frac:number_frac?
+      { return -parseFloat(digs.join('') + frac); }
 
   string
-    = '\\"' ch:[ a-z0-9!#$%&\'\(\)*+,-\./]* '\\"' { return ch.join(''); }
+    = '\\"' ch:char* '\\"' { return ch.join(''); }
 
-  comment = init:'#' rest:char* { return init + rest.join(''); }
+  comment = '#' rest:char* { return rest.join(''); }
 
   keyword = 'then'
 

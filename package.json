@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "budo src/test.js:bundle.js | garnish"
+    "start": "budo src/test.js:bundle.js | garnish",
+    "test": "node ./tests/index.js"
   },
   "author": "",
   "license": "ISC",
